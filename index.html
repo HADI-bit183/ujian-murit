@@ -10,7 +10,7 @@
         display: none !important;
       }
     </style>
-    <link rel="stylesheet" href="styles.css?v=20">
+    <link rel="stylesheet" href="styles.css?v=21">
   </head>
   <body class="logged-out">
     <section class="login-screen active" id="login-screen" aria-label="Masuk akun">
@@ -103,7 +103,10 @@
             <section class="panel" aria-labelledby="teacher-profile-heading">
               <div class="panel-header">
                 <h2 id="teacher-profile-heading">Profil Guru</h2>
-                <span class="status live" id="teacher-status-label">Akun admin</span>
+                <div class="profile-actions">
+                  <span class="status live" id="teacher-status-label">Akun admin</span>
+                  <button class="ghost-button small" id="print-teacher-card" type="button">Cetak Kartu</button>
+                </div>
               </div>
               <form class="form-grid" id="teacher-profile-form">
                 <label>Nama lengkap<input name="name" autocomplete="name" required></label>
@@ -206,6 +209,7 @@
             <section class="panel" aria-labelledby="student-profile-heading">
               <div class="panel-header">
                 <h2 id="student-profile-heading">Profil Murid</h2>
+                <button class="ghost-button small" id="print-student-card" type="button">Cetak Kartu</button>
               </div>
               <form class="form-grid" id="student-profile-form">
                 <label>Nama<input name="name" autocomplete="name" required></label>
@@ -404,6 +408,6 @@
       </div>
     </div>
 
-    <script src="app.js?v=20"></script>
+    <script src="app.js?v=21"></script>
   </body>
 </html>

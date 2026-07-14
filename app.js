@@ -812,6 +812,320 @@ function printAccountPdf(kind) {
   printWindow.document.close();
 }
 
+function getCurrentCardData(role) {
+  if (!currentUser || currentUser.role !== role) return null;
+  const account = findAccount(currentUser.id);
+  if (role === "teacher") {
+    const teacher = getCurrentTeacher();
+    if (!teacher || !account) return null;
+    return {
+      roleLabel: "Kartu Guru",
+      badge: "GURU",
+      name: teacher.name,
+      username: account.username,
+      password: account.password,
+      primaryLabel: "Mata Pelajaran",
+      primaryValue: teacher.subject || "-",
+      secondaryLabel: "Kelas Ajar",
+      secondaryValue: teacher.classes || "-",
+      idLabel: "NIP",
+      idValue: teacher.nip || "-",
+      contactLabel: "Kontak",
+      contactValue: teacher.phone || teacher.email || "-"
+    };
+  }
+
+  const student = getCurrentStudent();
+  if (!student || !account) return null;
+  return {
+    roleLabel: "Kartu Murid",
+    badge: "MURID",
+    name: student.name,
+    username: account.username,
+    password: account.password,
+    primaryLabel: "Kelas",
+    primaryValue: student.className || "-",
+    secondaryLabel: "NISN",
+    secondaryValue: student.nisn || "-",
+    idLabel: "Email",
+    idValue: student.email || "-",
+    contactLabel: "Akses",
+    contactValue: "UjianKu"
+  };
+}
+
+function printProfileCard(role) {
+  const card = getCurrentCardData(role);
+  if (!card) {
+    alert(role === "teacher" ? "Data guru belum lengkap untuk dicetak." : "Data murid belum lengkap untuk dicetak.");
+    return;
+  }
+
+  const schoolName = state.school.name || "Sekolah";
+  const schoolYear = state.school.year || "-";
+  const printedAt = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" }).format(new Date());
+  const printWindow = window.open("", "_blank", "width=920,height=720");
+  if (!printWindow) {
+    alert("Popup cetak diblokir browser. Izinkan popup untuk mencetak kartu.");
+    return;
+  }
+
+  printWindow.document.write(`
+    <!doctype html>
+    <html lang="id">
+      <head>
+        <meta charset="utf-8">
+        <title>${escapeHtml(card.roleLabel)} - ${escapeHtml(card.name)}</title>
+        <style>
+          @page { size: A4; margin: 16mm; }
+          * { box-sizing: border-box; }
+          body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: start center;
+            color: #1e2733;
+            font-family: Arial, sans-serif;
+            background: #f3f6fa;
+          }
+          .sheet {
+            width: 100%;
+            display: grid;
+            gap: 14px;
+            justify-items: center;
+          }
+          .card {
+            width: 88mm;
+            min-height: 56mm;
+            position: relative;
+            overflow: hidden;
+            border-radius: 14px;
+            border: 1px solid #cfd9e5;
+            background:
+              linear-gradient(135deg, #ffffff 0 55%, #eef7f8 55% 100%);
+            box-shadow: 0 16px 36px rgba(30, 39, 51, 0.18);
+          }
+          .card::before {
+            content: "";
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 24mm;
+            background: linear-gradient(180deg, #156c71, #0e4b50);
+          }
+          .card::after {
+            content: "";
+            position: absolute;
+            right: -20mm;
+            top: -26mm;
+            width: 62mm;
+            height: 62mm;
+            border-radius: 50%;
+            background: rgba(229, 163, 63, 0.22);
+          }
+          .content {
+            position: relative;
+            z-index: 1;
+            padding: 8mm 7mm 7mm 9mm;
+            display: grid;
+            grid-template-columns: 18mm 1fr;
+            gap: 6mm;
+            min-height: 56mm;
+          }
+          .brand-rail {
+            color: white;
+            display: grid;
+            align-content: space-between;
+            justify-items: center;
+            min-height: 42mm;
+          }
+          .mark {
+            width: 15mm;
+            height: 15mm;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+            background: #e5a33f;
+            color: #1e2733;
+            font-weight: 900;
+            font-size: 13px;
+          }
+          .vertical {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            letter-spacing: 1.5px;
+            font-weight: 800;
+            font-size: 9px;
+          }
+          .details {
+            display: grid;
+            gap: 5px;
+          }
+          .topline {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            align-items: flex-start;
+          }
+          .school {
+            font-size: 9px;
+            color: #647282;
+            font-weight: 700;
+            text-transform: uppercase;
+          }
+          .badge {
+            background: #e5a33f;
+            color: #1e2733;
+            border-radius: 999px;
+            padding: 4px 7px;
+            font-size: 8px;
+            font-weight: 900;
+            letter-spacing: 0.8px;
+          }
+          h1 {
+            margin: 1px 0 0;
+            font-size: 18px;
+            line-height: 1.05;
+            color: #1e2733;
+          }
+          .role {
+            color: #156c71;
+            font-size: 10px;
+            font-weight: 800;
+          }
+          .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            margin-top: 3px;
+          }
+          .info {
+            border: 1px solid #dce4ed;
+            border-radius: 7px;
+            background: rgba(255, 255, 255, 0.84);
+            padding: 5px 6px;
+            min-height: 28px;
+          }
+          .info span,
+          .credential span {
+            display: block;
+            color: #647282;
+            font-size: 7.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+          }
+          .info strong {
+            display: block;
+            margin-top: 2px;
+            font-size: 10px;
+            line-height: 1.1;
+          }
+          .credential {
+            margin-top: 3px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            border-radius: 9px;
+            background: #156c71;
+            color: white;
+            padding: 6px;
+          }
+          .credential span {
+            color: rgba(255, 255, 255, 0.72);
+          }
+          .credential strong {
+            display: block;
+            margin-top: 2px;
+            font-size: 12px;
+            letter-spacing: 0.4px;
+          }
+          .foot {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin-top: 2px;
+            color: #647282;
+            font-size: 7.5px;
+          }
+          .hint {
+            width: 88mm;
+            color: #647282;
+            font-size: 11px;
+            text-align: center;
+          }
+          @media print {
+            body { background: white; }
+            .card { box-shadow: none; break-inside: avoid; }
+            .hint { display: none; }
+          }
+        </style>
+      </head>
+      <body>
+        <main class="sheet">
+          <article class="card">
+            <div class="content">
+              <aside class="brand-rail">
+                <div class="mark">UK</div>
+                <div class="vertical">UJIAN KU</div>
+              </aside>
+              <section class="details">
+                <div class="topline">
+                  <div>
+                    <div class="school">${escapeHtml(schoolName)}</div>
+                    <div class="role">${escapeHtml(card.roleLabel)}</div>
+                  </div>
+                  <div class="badge">${escapeHtml(card.badge)}</div>
+                </div>
+                <div>
+                  <h1>${escapeHtml(card.name)}</h1>
+                </div>
+                <div class="info-grid">
+                  <div class="info">
+                    <span>${escapeHtml(card.primaryLabel)}</span>
+                    <strong>${escapeHtml(card.primaryValue)}</strong>
+                  </div>
+                  <div class="info">
+                    <span>${escapeHtml(card.secondaryLabel)}</span>
+                    <strong>${escapeHtml(card.secondaryValue)}</strong>
+                  </div>
+                  <div class="info">
+                    <span>${escapeHtml(card.idLabel)}</span>
+                    <strong>${escapeHtml(card.idValue)}</strong>
+                  </div>
+                  <div class="info">
+                    <span>${escapeHtml(card.contactLabel)}</span>
+                    <strong>${escapeHtml(card.contactValue)}</strong>
+                  </div>
+                </div>
+                <div class="credential">
+                  <div>
+                    <span>Username</span>
+                    <strong>${escapeHtml(card.username)}</strong>
+                  </div>
+                  <div>
+                    <span>Password</span>
+                    <strong>${escapeHtml(card.password)}</strong>
+                  </div>
+                </div>
+                <div class="foot">
+                  <span>Tahun Ajaran ${escapeHtml(schoolYear)}</span>
+                  <span>Dicetak ${escapeHtml(printedAt)}</span>
+                </div>
+              </section>
+            </div>
+          </article>
+          <p class="hint">Pilih Print atau Save as PDF. Bagikan kartu ini hanya kepada pemilik akun.</p>
+        </main>
+        <script>
+          window.addEventListener("load", () => {
+            window.print();
+          });
+        </script>
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+}
+
 function findAccountByLogin(username, password) {
   return state.accounts.find((account) => (
     account.username.trim().toLowerCase() === username.trim().toLowerCase()
@@ -1565,6 +1879,8 @@ document.getElementById("reset-data").addEventListener("click", () => {
 document.getElementById("print-all-accounts").addEventListener("click", () => printAccountPdf("all"));
 document.getElementById("print-teacher-accounts").addEventListener("click", () => printAccountPdf("teacher"));
 document.getElementById("print-student-accounts").addEventListener("click", () => printAccountPdf("student"));
+document.getElementById("print-teacher-card").addEventListener("click", () => printProfileCard("teacher"));
+document.getElementById("print-student-card").addEventListener("click", () => printProfileCard("student"));
 
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) addViolation("Berpindah tab atau aplikasi");
