@@ -1004,13 +1004,13 @@ function printProfileCard(role) {
         <meta charset="utf-8">
         <title>${escapeHtml(card.roleLabel)} - ${escapeHtml(card.name)}</title>
         <style>
-          @page { size: A4; margin: 16mm; }
+          @page { size: 96mm 64mm; margin: 2mm; }
           * { box-sizing: border-box; }
           body {
             margin: 0;
             min-height: 100vh;
             display: grid;
-            place-items: start center;
+            place-items: center;
             color: #1e2733;
             font-family: Arial, sans-serif;
             background: #f3f6fa;
@@ -1020,6 +1020,7 @@ function printProfileCard(role) {
             display: grid;
             gap: 14px;
             justify-items: center;
+            padding: 16px;
           }
           .card {
             --primary: ${theme.primary};
@@ -1028,8 +1029,8 @@ function printProfileCard(role) {
             --accent-soft: ${theme.accentSoft};
             --pop: ${theme.pop};
             --panel: ${theme.panel};
-            width: 88mm;
-            min-height: 56mm;
+            width: 92mm;
+            height: 58mm;
             position: relative;
             overflow: hidden;
             border-radius: 16px;
@@ -1067,18 +1068,18 @@ function printProfileCard(role) {
           .content {
             position: relative;
             z-index: 1;
-            padding: 8mm 7mm 7mm 9mm;
+            padding: 7mm 6mm 6mm 8mm;
             display: grid;
             grid-template-columns: 18mm 1fr;
-            gap: 6mm;
-            min-height: 56mm;
+            gap: 5mm;
+            height: 58mm;
           }
           .brand-rail {
             color: white;
             display: grid;
             align-content: space-between;
             justify-items: center;
-            min-height: 42mm;
+            min-height: 44mm;
           }
           .mark {
             width: 15mm;
@@ -1103,7 +1104,8 @@ function printProfileCard(role) {
           }
           .details {
             display: grid;
-            gap: 5px;
+            gap: 4px;
+            align-content: center;
           }
           .topline {
             display: flex;
@@ -1131,7 +1133,7 @@ function printProfileCard(role) {
           }
           h1 {
             margin: 1px 0 0;
-            font-size: 18px;
+            font-size: 17px;
             line-height: 1.05;
             color: #1e2733;
           }
@@ -1196,18 +1198,24 @@ function printProfileCard(role) {
             display: flex;
             justify-content: space-between;
             gap: 8px;
-            margin-top: 2px;
+            margin-top: 1px;
             color: #647282;
             font-size: 7.5px;
           }
           .hint {
-            width: 88mm;
+            width: 92mm;
             color: #647282;
             font-size: 11px;
             text-align: center;
           }
           @media print {
-            body { background: white; }
+            body {
+              min-height: auto;
+              background: white;
+            }
+            .sheet {
+              padding: 0;
+            }
             .card {
               border: 1.4mm solid var(--primary);
               box-shadow: none;
