@@ -1002,7 +1002,7 @@ function printProfileCard(role, accountId = currentUser?.id) {
   const schoolName = state.school.name || "Sekolah";
   const schoolYear = state.school.year || "-";
   const printedAt = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" }).format(new Date());
-  const schoolLogoUrl = new URL("assets/sdn-1-way-tenong-logo.png?v=37", window.location.href).href;
+  const schoolLogoUrl = new URL("assets/sdn-1-way-tenong-logo.png?v=38", window.location.href).href;
   const theme = role === "admin"
     ? {
       primary: "#0f172a",
@@ -1560,7 +1560,7 @@ function loadImageDataUrl(dataUrl) {
 }
 
 async function fetchLogoAssets() {
-  const response = await fetch(new URL("assets/sdn-1-way-tenong-logo.png?v=37", window.location.href));
+  const response = await fetch(new URL("assets/sdn-1-way-tenong-logo.png?v=38", window.location.href));
   const blob = await response.blob();
   const dataUrl = await new Promise((resolve) => {
     const reader = new FileReader();
@@ -1709,7 +1709,7 @@ function buildCardPdf(card, role, logoAssets) {
   return output;
 }
 
-async function downloadAllUserCardsZip() {
+async function downloadAllUserCardsZip(format = "pdf") {
   const users = [
     ...state.teachers.map((teacher) => ({ role: "teacher", accountId: teacher.accountId })),
     ...state.students.map((student) => ({ role: "student", accountId: student.accountId }))
@@ -1728,25 +1728,30 @@ async function downloadAllUserCardsZip() {
   cards.forEach((item, index) => {
     const roleFolder = item.role === "teacher" ? "guru" : "murid";
     const baseName = `${String(index + 1).padStart(3, "0")}-${sanitizeFileName(item.card.name)}`;
+    if (format === "html") {
+      files.push({
+        name: `${roleFolder}/${baseName}.html`,
+        content: buildZipCardHtml(item.card, item.role, logoAssets.dataUrl)
+      });
+      return;
+    }
     files.push({
-      name: `html/${roleFolder}/${baseName}.html`,
-      content: buildZipCardHtml(item.card, item.role, logoAssets.dataUrl)
-    });
-    files.push({
-      name: `pdf/${roleFolder}/${baseName}.pdf`,
+      name: `${roleFolder}/${baseName}.pdf`,
       content: buildCardPdf(item.card, item.role, logoAssets)
     });
   });
   files.push({
     name: "README.txt",
-    content: "ZIP ini berisi kartu guru dan murid dalam dua format: folder pdf/ untuk file PDF siap cetak, dan folder html/ sebagai cadangan yang bisa dibuka di browser."
+    content: format === "html"
+      ? "ZIP ini berisi kartu guru dan murid dalam format HTML. Buka file di browser, lalu pilih Print atau Save as PDF jika diperlukan."
+      : "ZIP ini berisi kartu guru dan murid dalam format PDF siap cetak. Setiap file PDF berisi satu kartu terpisah."
   });
 
   const blob = createZipBlob(files);
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `kartu-guru-murid-${sanitizeFileName(state.school.name || "sekolah")}.zip`;
+  link.download = `kartu-guru-murid-${format}-${sanitizeFileName(state.school.name || "sekolah")}.zip`;
   link.click();
   URL.revokeObjectURL(url);
 }
@@ -2504,7 +2509,8 @@ document.getElementById("reset-data").addEventListener("click", () => {
 document.getElementById("print-all-accounts").addEventListener("click", () => printAccountPdf("all"));
 document.getElementById("print-teacher-accounts").addEventListener("click", () => printAccountPdf("teacher"));
 document.getElementById("print-student-accounts").addEventListener("click", () => printAccountPdf("student"));
-document.getElementById("download-card-zip").addEventListener("click", downloadAllUserCardsZip);
+document.getElementById("download-card-pdf-zip").addEventListener("click", () => downloadAllUserCardsZip("pdf"));
+document.getElementById("download-card-html-zip").addEventListener("click", () => downloadAllUserCardsZip("html"));
 document.getElementById("print-admin-card").addEventListener("click", () => printProfileCard("admin"));
 document.getElementById("print-teacher-card").addEventListener("click", () => printProfileCard("teacher"));
 document.getElementById("print-student-card").addEventListener("click", () => printProfileCard("student"));
