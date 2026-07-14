@@ -307,15 +307,7 @@ function renderTeacher() {
     "Belum ada pelanggaran."
   );
 
-  renderActivityList(
-    document.getElementById("teacher-results"),
-    state.results.slice().reverse().map((item) => ({
-      title: `${findStudentName(item.studentAccountId)} • ${typeof item.score === "number" ? `Nilai ${item.score}` : "Menunggu penilaian"}`,
-      text: findExamTitle(item.examId),
-      meta: formatDateTime(item.submittedAt)
-    })),
-    "Belum ada hasil ujian."
-  );
+  renderTeacherResults(teacherExams.map((exam) => exam.id));
 }
 
 function renderStudent() {
@@ -598,12 +590,26 @@ function submitExam() {
   });
   const wrong = exam.questions.length - correct;
   const score = exam.questions.length ? Math.round((correct / exam.questions.length) * 100) : 0;
+  const questionReview = exam.questions.map((question, index) => {
+    const studentAnswer = session.answers[index];
+    return {
+      number: index + 1,
+      question: question.text,
+      options: question.options,
+      studentAnswer,
+      correctAnswer: question.answer,
+      isCorrect: studentAnswer === question.answer
+    };
+  });
   state.results.push({
     id: makeId("result"),
     examId: exam.id,
     sessionId: session.id,
     studentAccountId: currentUser?.id,
     studentName: getCurrentStudent()?.name || "",
+    answers: { ...session.answers },
+    questionReview,
+    totalQuestions: exam.questions.length,
     correct,
     wrong,
     score,
@@ -629,6 +635,104 @@ function findAccount(id) {
 
 function findStudentName(accountId) {
   return state.students.find((student) => student.accountId === accountId)?.name || "Murid";
+}
+
+function answerLetter(value) {
+  return Number.isInteger(Number(value)) ? String.fromCharCode(65 + Number(value)) : "-";
+}
+
+function getResultReview(result) {
+  if (Array.isArray(result.questionReview) && result.questionReview.length) {
+    return result.questionReview;
+  }
+  const exam = state.exams.find((item) => item.id === result.examId);
+  if (!exam || !exam.questions?.length || !result.answers) return [];
+  return exam.questions.map((question, index) => {
+    const studentAnswer = result.answers[index] ?? result.answers[String(index)];
+    return {
+      number: index + 1,
+      question: question.text,
+      options: question.options,
+      studentAnswer,
+      correctAnswer: question.answer,
+      isCorrect: studentAnswer === question.answer
+    };
+  });
+}
+
+function renderTeacherResults(teacherExamIds) {
+  const container = document.getElementById("teacher-results");
+  const allowedExamIds = new Set(teacherExamIds);
+  const results = state.results
+    .filter((result) => !allowedExamIds.size || allowedExamIds.has(result.examId))
+    .slice()
+    .reverse();
+
+  container.innerHTML = "";
+  if (!results.length) {
+    container.append(emptyBlock("Belum ada hasil ujian."));
+    return;
+  }
+
+  results.forEach((result) => {
+    const review = getResultReview(result);
+    const details = document.createElement("details");
+    details.className = "result-detail";
+    const correct = typeof result.correct === "number" ? result.correct : review.filter((item) => item.isCorrect).length;
+    const total = result.totalQuestions || review.length || correct + (result.wrong || 0);
+    const scoreText = typeof result.score === "number" ? `Nilai ${result.score}` : "Menunggu penilaian";
+    const rowsHtml = review.map((item) => {
+      const studentLetter = answerLetter(item.studentAnswer);
+      const correctLetter = answerLetter(item.correctAnswer);
+      const studentOption = Number.isInteger(Number(item.studentAnswer)) ? item.options?.[Number(item.studentAnswer)] : "Tidak dijawab";
+      const correctOption = Number.isInteger(Number(item.correctAnswer)) ? item.options?.[Number(item.correctAnswer)] : "-";
+      return `
+        <tr>
+          <td>${item.number}</td>
+          <td>
+            <strong>${escapeHtml(item.question)}</strong>
+            <small>Kunci: ${escapeHtml(correctLetter)}. ${escapeHtml(correctOption || "-")}</small>
+          </td>
+          <td>
+            <strong>${escapeHtml(studentLetter)}</strong>
+            <small>${escapeHtml(studentOption || "Tidak dijawab")}</small>
+          </td>
+          <td><span class="status ${item.isCorrect ? "live" : "done"}">${item.isCorrect ? "Benar" : "Salah"}</span></td>
+        </tr>
+      `;
+    }).join("");
+
+    details.innerHTML = `
+      <summary>
+        <span>
+          <strong>${escapeHtml(findStudentName(result.studentAccountId))}</strong>
+          <small>${escapeHtml(findExamTitle(result.examId))} • ${formatDateTime(result.submittedAt)}</small>
+        </span>
+        <span class="result-score">
+          <strong>${escapeHtml(scoreText)}</strong>
+          <small>${correct}/${total || 0} benar</small>
+        </span>
+      </summary>
+      ${review.length ? `
+        <div class="result-answer-wrap">
+          <table class="answer-table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Soal dan Kunci</th>
+                <th>Jawaban Murid</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>${rowsHtml}</tbody>
+          </table>
+        </div>
+      ` : `
+        <div class="result-empty-note">Detail jawaban belum tersedia untuk hasil lama. Jawaban akan tersimpan untuk ujian berikutnya.</div>
+      `}
+    `;
+    container.append(details);
+  });
 }
 
 function getPrintableAccounts(kind) {

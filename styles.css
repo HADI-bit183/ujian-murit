@@ -665,6 +665,105 @@ th {
   color: var(--muted);
 }
 
+.result-detail {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.result-detail summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.result-detail summary::-webkit-details-marker {
+  display: none;
+}
+
+.result-detail summary::after {
+  content: "Lihat jawaban";
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #e5f4f2;
+  color: var(--brand);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.result-detail[open] summary::after {
+  content: "Tutup";
+}
+
+.result-detail summary span,
+.result-score {
+  display: grid;
+  gap: 3px;
+}
+
+.result-detail summary small,
+.result-score small,
+.answer-table small,
+.result-empty-note {
+  color: var(--muted);
+}
+
+.result-score {
+  text-align: right;
+}
+
+.result-answer-wrap {
+  max-height: 420px;
+  overflow: auto;
+  border-top: 1px solid var(--line);
+}
+
+.answer-table {
+  min-width: 760px;
+}
+
+.answer-table th {
+  position: sticky;
+  top: 0;
+  background: #f8fafc;
+  z-index: 1;
+}
+
+.answer-table td:nth-child(1),
+.answer-table th:nth-child(1) {
+  width: 54px;
+  text-align: center;
+}
+
+.answer-table td:nth-child(4),
+.answer-table th:nth-child(4) {
+  width: 94px;
+}
+
+.answer-table strong,
+.answer-table small {
+  display: block;
+  white-space: normal;
+}
+
+.answer-table td {
+  vertical-align: top;
+}
+
+.result-empty-note {
+  border-top: 1px solid var(--line);
+  padding: 14px;
+  font-size: 0.92rem;
+}
+
 .bar-chart {
   min-height: 220px;
   display: grid;
