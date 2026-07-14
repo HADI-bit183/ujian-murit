@@ -1034,12 +1034,11 @@ function printProfileCard(role) {
             position: relative;
             overflow: hidden;
             border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.82);
+            border: 1px solid #dbe5ee;
             background:
-              radial-gradient(circle at 92% 12%, var(--accent-soft) 0 22%, transparent 23%),
-              radial-gradient(circle at 76% 88%, rgba(20, 184, 166, 0.16) 0 20%, transparent 21%),
-              linear-gradient(135deg, #ffffff 0 46%, var(--panel) 46% 100%);
-            box-shadow: 0 18px 42px rgba(30, 39, 51, 0.2);
+              linear-gradient(90deg, var(--primary) 0 26mm, transparent 26mm),
+              linear-gradient(180deg, #ffffff 0 100%);
+            box-shadow: 0 14px 28px rgba(30, 39, 51, 0.12);
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
           }
@@ -1047,23 +1046,20 @@ function printProfileCard(role) {
             content: "";
             position: absolute;
             inset: 0 auto 0 0;
-            width: 25mm;
-            background:
-              linear-gradient(180deg, var(--primary), var(--primary-dark)),
-              var(--primary);
+            width: 26mm;
+            background: var(--primary);
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
           }
           .card::after {
             content: "";
             position: absolute;
-            right: -16mm;
+            right: 0;
             top: 0;
-            width: 48mm;
+            width: 66mm;
             height: 100%;
             background:
-              linear-gradient(135deg, transparent 0 28%, rgba(255, 255, 255, 0.48) 28% 31%, transparent 31% 45%, rgba(255, 255, 255, 0.35) 45% 47%, transparent 47%),
-              linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.36));
+              linear-gradient(180deg, var(--panel) 0 13mm, #ffffff 13mm 100%);
           }
           .content {
             position: relative;
@@ -1103,9 +1099,21 @@ function printProfileCard(role) {
             font-size: 9px;
           }
           .details {
+            position: relative;
             display: grid;
             gap: 4px;
             align-content: center;
+            padding: 2mm 3mm 2mm 2mm;
+          }
+          .details::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            height: 2mm;
+            border-radius: 999px;
+            background: var(--accent);
           }
           .topline {
             display: flex;
@@ -1120,14 +1128,14 @@ function printProfileCard(role) {
             text-transform: uppercase;
           }
           .badge {
-            background: linear-gradient(135deg, var(--accent), var(--pop));
+            background: var(--accent);
             color: #ffffff;
             border-radius: 999px;
             padding: 4px 7px;
             font-size: 8px;
             font-weight: 900;
             letter-spacing: 0.8px;
-            box-shadow: 0 7px 14px rgba(30, 39, 51, 0.18);
+            box-shadow: none;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
           }
@@ -1149,12 +1157,12 @@ function printProfileCard(role) {
             margin-top: 3px;
           }
           .info {
-            border: 1px solid rgba(220, 228, 237, 0.8);
+            border: 1px solid #dce4ed;
             border-radius: 7px;
-            background: rgba(255, 255, 255, 0.88);
+            background: #ffffff;
             padding: 5px 6px;
             min-height: 28px;
-            box-shadow: 0 5px 12px rgba(30, 39, 51, 0.06);
+            box-shadow: none;
             border-left: 3px solid var(--accent);
           }
           .info span,
@@ -1177,11 +1185,10 @@ function printProfileCard(role) {
             grid-template-columns: 1fr 1fr;
             gap: 6px;
             border-radius: 10px;
-            background:
-              linear-gradient(135deg, var(--primary-dark), var(--primary) 62%, var(--pop));
+            background: var(--primary);
             color: white;
             padding: 7px;
-            box-shadow: 0 10px 18px rgba(30, 39, 51, 0.18);
+            box-shadow: none;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
           }
@@ -1217,7 +1224,7 @@ function printProfileCard(role) {
               padding: 0;
             }
             .card {
-              border: 1.4mm solid var(--primary);
+              border: 0.4mm solid var(--primary);
               box-shadow: none;
               break-inside: avoid;
               -webkit-print-color-adjust: exact;
