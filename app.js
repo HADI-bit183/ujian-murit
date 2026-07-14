@@ -1002,7 +1002,7 @@ function printProfileCard(role, accountId = currentUser?.id) {
   const schoolName = state.school.name || "Sekolah";
   const schoolYear = state.school.year || "-";
   const printedAt = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" }).format(new Date());
-  const schoolLogoUrl = new URL("assets/sdn-1-way-tenong-logo.png?v=35", window.location.href).href;
+  const schoolLogoUrl = new URL("assets/sdn-1-way-tenong-logo.png?v=36", window.location.href).href;
   const theme = role === "admin"
     ? {
       primary: "#0f172a",
@@ -1380,6 +1380,212 @@ function printProfileCard(role, accountId = currentUser?.id) {
     </html>
   `);
   printWindow.document.close();
+}
+
+function sanitizeFileName(value) {
+  return String(value || "kartu").trim().replace(/[^a-z0-9]+/gi, "-").replace(/^-+|-+$/g, "").toLowerCase() || "kartu";
+}
+
+function getCardTheme(role) {
+  if (role === "admin") {
+    return { primary: "#0f172a", accent: "#e5a33f", panel: "#f8fafc" };
+  }
+  if (role === "teacher") {
+    return { primary: "#0f766e", accent: "#f59e0b", panel: "#ecfeff" };
+  }
+  return { primary: "#4338ca", accent: "#f97316", panel: "#eef2ff" };
+}
+
+function buildZipCardHtml(card, role, logoDataUrl) {
+  const theme = getCardTheme(role);
+  const schoolName = state.school.name || "Sekolah";
+  const schoolYear = state.school.year || "-";
+  const printedAt = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" }).format(new Date());
+  return `<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <title>${escapeHtml(card.roleLabel)} - ${escapeHtml(card.name)}</title>
+  <style>
+    @page { size: 94mm 62mm; margin: 2mm; }
+    * { box-sizing: border-box; }
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f3f6fa; color: #1e2733; font-family: Arial, sans-serif; }
+    .card { width: 90mm; height: 56mm; position: relative; overflow: hidden; border-radius: 16px; border: 0.4mm solid ${theme.primary}; background: linear-gradient(90deg, ${theme.primary} 0 22mm, transparent 22mm), linear-gradient(180deg, #fff 0 100%); }
+    .card::after { content: ""; position: absolute; right: 0; top: 0; width: 68mm; height: 100%; background: linear-gradient(180deg, ${theme.panel} 0 13mm, #fff 13mm 100%); }
+    .content { position: relative; z-index: 1; height: 56mm; }
+    .mark { position: absolute; left: 4mm; top: 6mm; width: 14mm; height: 14mm; border-radius: 50%; background: #fff; padding: 1mm; display: grid; place-items: center; }
+    .mark img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .vertical { position: absolute; left: 7.2mm; bottom: 7mm; color: #fff; writing-mode: vertical-rl; transform: rotate(180deg); letter-spacing: 1.5px; font-weight: 800; font-size: 7.5px; }
+    .details { position: absolute; left: 26mm; top: 5mm; right: 5mm; bottom: 4mm; }
+    .details::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1.2mm; border-radius: 999px; background: ${theme.accent}; }
+    .topline { position: absolute; left: 0; right: 0; top: 2.5mm; display: flex; justify-content: space-between; gap: 6px; align-items: center; }
+    .school { font-size: 7.5px; color: #647282; font-weight: 700; text-transform: uppercase; }
+    .role { color: ${theme.primary}; font-size: 8.8px; font-weight: 800; }
+    .badge { background: ${theme.accent}; color: #fff; border-radius: 999px; padding: 3px 6px; font-size: 7.2px; font-weight: 900; letter-spacing: 0.8px; }
+    h1 { position: absolute; left: 0; right: 0; top: 10.5mm; margin: 0; font-size: 12.8px; line-height: 1.05; color: #1e2733; }
+    .info-grid { position: absolute; left: 0; right: 0; top: 18mm; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 8.6mm 8.6mm; gap: 3px; }
+    .info { border: 1px solid #dce4ed; border-left: 2px solid ${theme.accent}; border-radius: 7px; background: #fff; padding: 2px 4px; height: 8.6mm; }
+    .info span, .credential span { display: block; color: #647282; font-size: 5.7px; font-weight: 800; text-transform: uppercase; }
+    .info strong { display: block; margin-top: 1px; font-size: 7.8px; line-height: 1.1; }
+    .credential { position: absolute; left: 0; right: 0; top: 37mm; height: 8mm; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; border-radius: 8px; background: ${theme.primary}; color: #fff; padding: 2px 5px; }
+    .credential span { color: rgba(255,255,255,.72); }
+    .credential strong { display: block; margin-top: 1px; font-size: 9.2px; letter-spacing: .4px; }
+    .foot { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; gap: 8px; color: #647282; font-size: 6.5px; }
+    @media print { body { min-height: auto; background: #fff; } .card { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <article class="card">
+    <div class="content">
+      <aside><div class="mark"><img src="${logoDataUrl}" alt="Logo ${escapeHtml(schoolName)}"></div><div class="vertical">UJIAN KU</div></aside>
+      <section class="details">
+        <div class="topline"><div><div class="school">${escapeHtml(schoolName)}</div><div class="role">${escapeHtml(card.roleLabel)}</div></div><div class="badge">${escapeHtml(card.badge)}</div></div>
+        <h1>${escapeHtml(card.name)}</h1>
+        <div class="info-grid">
+          <div class="info"><span>${escapeHtml(card.primaryLabel)}</span><strong>${escapeHtml(card.primaryValue)}</strong></div>
+          <div class="info"><span>${escapeHtml(card.secondaryLabel)}</span><strong>${escapeHtml(card.secondaryValue)}</strong></div>
+          <div class="info"><span>${escapeHtml(card.idLabel)}</span><strong>${escapeHtml(card.idValue)}</strong></div>
+          <div class="info"><span>${escapeHtml(card.contactLabel)}</span><strong>${escapeHtml(card.contactValue)}</strong></div>
+        </div>
+        <div class="credential"><div><span>Username</span><strong>${escapeHtml(card.username)}</strong></div><div><span>Password</span><strong>${escapeHtml(card.password)}</strong></div></div>
+        <div class="foot"><span>Tahun Ajaran ${escapeHtml(schoolYear)}</span><span>Dicetak ${escapeHtml(printedAt)}</span></div>
+      </section>
+    </div>
+  </article>
+</body>
+</html>`;
+}
+
+function makeCrc32Table() {
+  return Array.from({ length: 256 }, (_, index) => {
+    let value = index;
+    for (let bit = 0; bit < 8; bit += 1) value = value & 1 ? 0xedb88320 ^ (value >>> 1) : value >>> 1;
+    return value >>> 0;
+  });
+}
+
+const crc32Table = makeCrc32Table();
+
+function crc32(bytes) {
+  let crc = 0xffffffff;
+  bytes.forEach((byte) => {
+    crc = crc32Table[(crc ^ byte) & 0xff] ^ (crc >>> 8);
+  });
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+function writeUint16(target, value) {
+  target.push(value & 0xff, (value >>> 8) & 0xff);
+}
+
+function writeUint32(target, value) {
+  target.push(value & 0xff, (value >>> 8) & 0xff, (value >>> 16) & 0xff, (value >>> 24) & 0xff);
+}
+
+function createZipBlob(files) {
+  const encoder = new TextEncoder();
+  const chunks = [];
+  const centralDirectory = [];
+  let offset = 0;
+  const now = new Date();
+  const dosTime = (now.getHours() << 11) | (now.getMinutes() << 5) | Math.floor(now.getSeconds() / 2);
+  const dosDate = ((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate();
+
+  files.forEach((file) => {
+    const nameBytes = encoder.encode(file.name);
+    const dataBytes = encoder.encode(file.content);
+    const checksum = crc32(dataBytes);
+    const local = [];
+    writeUint32(local, 0x04034b50);
+    writeUint16(local, 20);
+    writeUint16(local, 0);
+    writeUint16(local, 0);
+    writeUint16(local, dosTime);
+    writeUint16(local, dosDate);
+    writeUint32(local, checksum);
+    writeUint32(local, dataBytes.length);
+    writeUint32(local, dataBytes.length);
+    writeUint16(local, nameBytes.length);
+    writeUint16(local, 0);
+    chunks.push(new Uint8Array(local), nameBytes, dataBytes);
+
+    const central = [];
+    writeUint32(central, 0x02014b50);
+    writeUint16(central, 20);
+    writeUint16(central, 20);
+    writeUint16(central, 0);
+    writeUint16(central, 0);
+    writeUint16(central, dosTime);
+    writeUint16(central, dosDate);
+    writeUint32(central, checksum);
+    writeUint32(central, dataBytes.length);
+    writeUint32(central, dataBytes.length);
+    writeUint16(central, nameBytes.length);
+    writeUint16(central, 0);
+    writeUint16(central, 0);
+    writeUint16(central, 0);
+    writeUint16(central, 0);
+    writeUint32(central, 0);
+    writeUint32(central, offset);
+    centralDirectory.push(new Uint8Array(central), nameBytes);
+    offset += local.length + nameBytes.length + dataBytes.length;
+  });
+
+  const centralSize = centralDirectory.reduce((sum, chunk) => sum + chunk.length, 0);
+  const end = [];
+  writeUint32(end, 0x06054b50);
+  writeUint16(end, 0);
+  writeUint16(end, 0);
+  writeUint16(end, files.length);
+  writeUint16(end, files.length);
+  writeUint32(end, centralSize);
+  writeUint32(end, offset);
+  writeUint16(end, 0);
+  return new Blob([...chunks, ...centralDirectory, new Uint8Array(end)], { type: "application/zip" });
+}
+
+function fetchLogoDataUrl() {
+  return fetch(new URL("assets/sdn-1-way-tenong-logo.png?v=36", window.location.href))
+    .then((response) => response.blob())
+    .then((blob) => new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.addEventListener("load", () => resolve(reader.result));
+      reader.readAsDataURL(blob);
+    }));
+}
+
+async function downloadAllUserCardsZip() {
+  const users = [
+    ...state.teachers.map((teacher) => ({ role: "teacher", accountId: teacher.accountId })),
+    ...state.students.map((student) => ({ role: "student", accountId: student.accountId }))
+  ];
+  const cards = users
+    .map((user) => ({ ...user, card: getCardData(user.role, user.accountId) }))
+    .filter((item) => item.card);
+
+  if (!cards.length) {
+    alert("Belum ada kartu guru atau murid untuk dimasukkan ke ZIP.");
+    return;
+  }
+
+  const logoDataUrl = await fetchLogoDataUrl();
+  const files = cards.map((item, index) => ({
+    name: `${item.role === "teacher" ? "guru" : "murid"}/${String(index + 1).padStart(3, "0")}-${sanitizeFileName(item.card.name)}.html`,
+    content: buildZipCardHtml(item.card, item.role, logoDataUrl)
+  }));
+  files.push({
+    name: "README.txt",
+    content: "Buka setiap file HTML kartu di browser, lalu pilih Print atau Save as PDF. Setiap file berisi satu kartu guru/murid terpisah."
+  });
+
+  const blob = createZipBlob(files);
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `kartu-guru-murid-${sanitizeFileName(state.school.name || "sekolah")}.zip`;
+  link.click();
+  URL.revokeObjectURL(url);
 }
 
 function findAccountByLogin(username, password) {
@@ -2135,6 +2341,7 @@ document.getElementById("reset-data").addEventListener("click", () => {
 document.getElementById("print-all-accounts").addEventListener("click", () => printAccountPdf("all"));
 document.getElementById("print-teacher-accounts").addEventListener("click", () => printAccountPdf("teacher"));
 document.getElementById("print-student-accounts").addEventListener("click", () => printAccountPdf("student"));
+document.getElementById("download-card-zip").addEventListener("click", downloadAllUserCardsZip);
 document.getElementById("print-admin-card").addEventListener("click", () => printProfileCard("admin"));
 document.getElementById("print-teacher-card").addEventListener("click", () => printProfileCard("teacher"));
 document.getElementById("print-student-card").addEventListener("click", () => printProfileCard("student"));
