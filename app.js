@@ -1079,16 +1079,16 @@ function printProfileCard(role) {
           }
           .mark {
             position: absolute;
-            left: 3.5mm;
-            top: 5mm;
-            width: 15mm;
-            height: 15mm;
+            left: 4mm;
+            top: 6mm;
+            width: 14mm;
+            height: 14mm;
             border-radius: 50%;
             display: grid;
             place-items: center;
             background: #ffffff;
             border: 1px solid rgba(255, 255, 255, 0.82);
-            padding: 1.2mm;
+            padding: 1mm;
             box-shadow: none;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
