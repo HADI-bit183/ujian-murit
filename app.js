@@ -1004,7 +1004,7 @@ function printProfileCard(role) {
         <meta charset="utf-8">
         <title>${escapeHtml(card.roleLabel)} - ${escapeHtml(card.name)}</title>
         <style>
-          @page { size: 96mm 64mm; margin: 2mm; }
+          @page { size: 94mm 62mm; margin: 2mm; }
           * { box-sizing: border-box; }
           body {
             margin: 0;
@@ -1029,14 +1029,14 @@ function printProfileCard(role) {
             --accent-soft: ${theme.accentSoft};
             --pop: ${theme.pop};
             --panel: ${theme.panel};
-            width: 92mm;
-            height: 58mm;
+            width: 90mm;
+            height: 56mm;
             position: relative;
             overflow: hidden;
             border-radius: 16px;
             border: 1px solid #dbe5ee;
             background:
-              linear-gradient(90deg, var(--primary) 0 26mm, transparent 26mm),
+              linear-gradient(90deg, var(--primary) 0 22mm, transparent 22mm),
               linear-gradient(180deg, #ffffff 0 100%);
             box-shadow: 0 14px 28px rgba(30, 39, 51, 0.12);
             -webkit-print-color-adjust: exact;
@@ -1046,7 +1046,7 @@ function printProfileCard(role) {
             content: "";
             position: absolute;
             inset: 0 auto 0 0;
-            width: 26mm;
+            width: 22mm;
             background: var(--primary);
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
@@ -1056,7 +1056,7 @@ function printProfileCard(role) {
             position: absolute;
             right: 0;
             top: 0;
-            width: 66mm;
+            width: 68mm;
             height: 100%;
             background:
               linear-gradient(180deg, var(--panel) 0 13mm, #ffffff 13mm 100%);
@@ -1064,30 +1064,31 @@ function printProfileCard(role) {
           .content {
             position: relative;
             z-index: 1;
-            padding: 7mm 6mm 6mm 8mm;
+            padding: 5mm 5mm 4.5mm 5.5mm;
             display: grid;
-            grid-template-columns: 18mm 1fr;
+            grid-template-columns: 14mm 1fr;
             gap: 5mm;
-            height: 58mm;
+            height: 56mm;
           }
           .brand-rail {
             color: white;
             display: grid;
             align-content: space-between;
             justify-items: center;
-            min-height: 44mm;
+            height: 46mm;
+            padding: 2mm 0 1mm;
           }
           .mark {
-            width: 15mm;
-            height: 15mm;
+            width: 12mm;
+            height: 12mm;
             border-radius: 8px;
             display: grid;
             place-items: center;
             background: var(--accent);
             color: #1e2733;
             font-weight: 900;
-            font-size: 13px;
-            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+            font-size: 11px;
+            box-shadow: none;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
           }
@@ -1096,14 +1097,15 @@ function printProfileCard(role) {
             transform: rotate(180deg);
             letter-spacing: 1.5px;
             font-weight: 800;
-            font-size: 9px;
+            font-size: 7.5px;
           }
           .details {
             position: relative;
             display: grid;
-            gap: 4px;
-            align-content: center;
-            padding: 2mm 3mm 2mm 2mm;
+            grid-template-rows: auto auto auto auto 1fr;
+            gap: 3px;
+            align-content: start;
+            padding: 2mm 2mm 1.5mm 1mm;
           }
           .details::before {
             content: "";
@@ -1111,18 +1113,19 @@ function printProfileCard(role) {
             left: 0;
             right: 0;
             top: 0;
-            height: 2mm;
+            height: 1.2mm;
             border-radius: 999px;
             background: var(--accent);
           }
           .topline {
             display: flex;
             justify-content: space-between;
-            gap: 8px;
-            align-items: flex-start;
+            gap: 6px;
+            align-items: center;
+            padding-top: 2mm;
           }
           .school {
-            font-size: 9px;
+            font-size: 7.5px;
             color: #647282;
             font-weight: 700;
             text-transform: uppercase;
@@ -1131,8 +1134,8 @@ function printProfileCard(role) {
             background: var(--accent);
             color: #ffffff;
             border-radius: 999px;
-            padding: 4px 7px;
-            font-size: 8px;
+            padding: 3px 6px;
+            font-size: 7.2px;
             font-weight: 900;
             letter-spacing: 0.8px;
             box-shadow: none;
@@ -1140,54 +1143,54 @@ function printProfileCard(role) {
             print-color-adjust: exact;
           }
           h1 {
-            margin: 1px 0 0;
-            font-size: 17px;
+            margin: 0;
+            font-size: 13.5px;
             line-height: 1.05;
             color: #1e2733;
           }
           .role {
             color: var(--primary);
-            font-size: 10px;
+            font-size: 8.8px;
             font-weight: 800;
           }
           .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 5px;
-            margin-top: 3px;
+            gap: 4px;
+            margin-top: 2px;
           }
           .info {
             border: 1px solid #dce4ed;
             border-radius: 7px;
             background: #ffffff;
-            padding: 5px 6px;
-            min-height: 28px;
+            padding: 4px 5px;
+            min-height: 15mm;
             box-shadow: none;
-            border-left: 3px solid var(--accent);
+            border-left: 2px solid var(--accent);
           }
           .info span,
           .credential span {
             display: block;
             color: #647282;
-            font-size: 7.5px;
+            font-size: 6.2px;
             font-weight: 800;
             text-transform: uppercase;
           }
           .info strong {
             display: block;
-            margin-top: 2px;
-            font-size: 10px;
+            margin-top: 1px;
+            font-size: 8.5px;
             line-height: 1.1;
           }
           .credential {
-            margin-top: 3px;
+            margin-top: 2px;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 6px;
-            border-radius: 10px;
+            gap: 5px;
+            border-radius: 8px;
             background: var(--primary);
             color: white;
-            padding: 7px;
+            padding: 5px;
             box-shadow: none;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
@@ -1198,19 +1201,20 @@ function printProfileCard(role) {
           .credential strong {
             display: block;
             margin-top: 2px;
-            font-size: 12px;
+            font-size: 10.5px;
             letter-spacing: 0.4px;
           }
           .foot {
             display: flex;
             justify-content: space-between;
             gap: 8px;
-            margin-top: 1px;
+            align-self: end;
+            margin-top: 0;
             color: #647282;
-            font-size: 7.5px;
+            font-size: 6.5px;
           }
           .hint {
-            width: 92mm;
+            width: 90mm;
             color: #647282;
             font-size: 11px;
             text-align: center;
