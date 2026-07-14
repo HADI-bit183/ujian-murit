@@ -974,6 +974,7 @@ function printProfileCard(role) {
   const schoolName = state.school.name || "Sekolah";
   const schoolYear = state.school.year || "-";
   const printedAt = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" }).format(new Date());
+  const schoolLogoUrl = new URL("assets/sdn-1-way-tenong-logo.png", window.location.href).href;
   const theme = role === "teacher"
     ? {
       primary: "#0f766e",
@@ -1078,20 +1079,25 @@ function printProfileCard(role) {
           }
           .mark {
             position: absolute;
-            left: 5mm;
-            top: 7mm;
-            width: 12mm;
-            height: 12mm;
-            border-radius: 8px;
+            left: 3.5mm;
+            top: 5mm;
+            width: 15mm;
+            height: 15mm;
+            border-radius: 50%;
             display: grid;
             place-items: center;
-            background: var(--accent);
-            color: #1e2733;
-            font-weight: 900;
-            font-size: 11px;
+            background: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.82);
+            padding: 1.2mm;
             box-shadow: none;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
+          }
+          .mark img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
           }
           .vertical {
             position: absolute;
@@ -1277,7 +1283,7 @@ function printProfileCard(role) {
           <article class="card">
             <div class="content">
               <aside class="brand-rail">
-                <div class="mark">UK</div>
+                <div class="mark"><img src="${schoolLogoUrl}" alt="Logo ${escapeHtml(schoolName)}"></div>
                 <div class="vertical">UJIAN KU</div>
               </aside>
               <section class="details">
