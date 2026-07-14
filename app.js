@@ -1138,13 +1138,13 @@ function printProfileCard(role, accountId = currentUser?.id) {
           }
           .vertical {
             position: absolute;
-            left: 7.2mm;
+            left: 3mm;
+            right: 3mm;
             bottom: 7mm;
-            writing-mode: vertical-rl;
-            transform: rotate(180deg);
-            letter-spacing: 1.5px;
+            text-align: center;
+            letter-spacing: 0.6px;
             font-weight: 800;
-            font-size: 7.5px;
+            font-size: 7.2px;
           }
           .details {
             position: absolute;
@@ -1213,10 +1213,10 @@ function printProfileCard(role, accountId = currentUser?.id) {
             position: absolute;
             left: 0;
             right: 0;
-            top: 18mm;
+            top: 19mm;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            grid-template-rows: 8.6mm 8.6mm;
+            grid-template-rows: 8mm 8mm;
             gap: 3px;
             margin-top: 0;
           }
@@ -1225,7 +1225,7 @@ function printProfileCard(role, accountId = currentUser?.id) {
             border-radius: 7px;
             background: #ffffff;
             padding: 2px 4px;
-            height: 8.6mm;
+            height: 8mm;
             box-shadow: none;
             border-left: 2px solid var(--accent);
           }
@@ -1247,8 +1247,8 @@ function printProfileCard(role, accountId = currentUser?.id) {
             position: absolute;
             left: 0;
             right: 0;
-            top: 37mm;
-            height: 8mm;
+            top: 37.2mm;
+            height: 7.6mm;
             margin-top: 0;
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -1274,7 +1274,7 @@ function printProfileCard(role, accountId = currentUser?.id) {
             position: absolute;
             left: 0;
             right: 0;
-            bottom: 0;
+            bottom: 1.4mm;
             display: flex;
             justify-content: space-between;
             gap: 8px;
@@ -1416,7 +1416,7 @@ function buildZipCardHtml(card, role, logoDataUrl) {
     .content { position: relative; z-index: 1; height: 56mm; }
     .mark { position: absolute; left: 4mm; top: 6mm; width: 14mm; height: 14mm; border-radius: 50%; background: #fff; padding: 1mm; display: grid; place-items: center; }
     .mark img { width: 100%; height: 100%; object-fit: contain; display: block; }
-    .vertical { position: absolute; left: 7.2mm; bottom: 7mm; color: #fff; writing-mode: vertical-rl; transform: rotate(180deg); letter-spacing: 1.5px; font-weight: 800; font-size: 7.5px; }
+    .vertical { position: absolute; left: 3mm; right: 3mm; bottom: 7mm; color: #fff; text-align: center; letter-spacing: 0.6px; font-weight: 800; font-size: 7.2px; }
     .details { position: absolute; left: 26mm; top: 5mm; right: 5mm; bottom: 4mm; }
     .details::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1.2mm; border-radius: 999px; background: ${theme.accent}; }
     .topline { position: absolute; left: 0; right: 0; top: 2.5mm; display: flex; justify-content: space-between; gap: 6px; align-items: center; }
@@ -1424,14 +1424,14 @@ function buildZipCardHtml(card, role, logoDataUrl) {
     .role { color: ${theme.primary}; font-size: 8.8px; font-weight: 800; }
     .badge { background: ${theme.accent}; color: #fff; border-radius: 999px; padding: 3px 6px; font-size: 7.2px; font-weight: 900; letter-spacing: 0.8px; }
     h1 { position: absolute; left: 0; right: 0; top: 10.5mm; margin: 0; font-size: 12.8px; line-height: 1.05; color: #1e2733; }
-    .info-grid { position: absolute; left: 0; right: 0; top: 18mm; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 8.6mm 8.6mm; gap: 3px; }
-    .info { border: 1px solid #dce4ed; border-left: 2px solid ${theme.accent}; border-radius: 7px; background: #fff; padding: 2px 4px; height: 8.6mm; }
+    .info-grid { position: absolute; left: 0; right: 0; top: 19mm; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 8mm 8mm; gap: 3px; }
+    .info { border: 1px solid #dce4ed; border-left: 2px solid ${theme.accent}; border-radius: 7px; background: #fff; padding: 2px 4px; height: 8mm; }
     .info span, .credential span { display: block; color: #647282; font-size: 5.7px; font-weight: 800; text-transform: uppercase; }
     .info strong { display: block; margin-top: 1px; font-size: 7.8px; line-height: 1.1; }
-    .credential { position: absolute; left: 0; right: 0; top: 37mm; height: 8mm; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; border-radius: 8px; background: ${theme.primary}; color: #fff; padding: 2px 5px; }
+    .credential { position: absolute; left: 0; right: 0; top: 37.2mm; height: 7.6mm; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; border-radius: 8px; background: ${theme.primary}; color: #fff; padding: 2px 5px; }
     .credential span { color: rgba(255,255,255,.72); }
     .credential strong { display: block; margin-top: 1px; font-size: 9.2px; letter-spacing: .4px; }
-    .foot { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; gap: 8px; color: #647282; font-size: 6.5px; }
+    .foot { position: absolute; left: 0; right: 0; bottom: 1.4mm; display: flex; justify-content: space-between; gap: 8px; color: #647282; font-size: 6.5px; }
     @media print { body { min-height: auto; background: #fff; } .card { break-inside: avoid; } }
   </style>
 </head>
@@ -1632,37 +1632,38 @@ function buildCardPdf(card, role, logoAssets) {
   const fit = (value, max) => String(value || "-").length > max ? `${String(value).slice(0, max - 1)}.` : String(value || "-");
 
   rect(0, 0, 90, 56, [1, 1, 1]);
-  rect(0, 0, 22, 56, [pr, pg, pb]);
-  rect(22, 0, 68, 13, [panelR, panelG, panelB]);
-  rect(26, 5, 56, 1.2, [ar, ag, ab]);
-  strokeRect(0.5, 0.5, 89, 55, [pr, pg, pb]);
-  ops.push(`q ${(14 * mm).toFixed(2)} 0 0 ${(14 * mm).toFixed(2)} ${(4 * mm).toFixed(2)} ${(pageH - 20 * mm).toFixed(2)} cm /Im1 Do Q\n`);
-  text("UJIAN KU", 7.4, 48, 7, [1, 1, 1], "F2");
-  text(fit(schoolName, 30), 26, 10, 7.4, [0.392, 0.447, 0.514], "F2");
-  text(card.roleLabel, 26, 14, 8.5, [pr, pg, pb], "F2");
-  rect(72, 7, 12, 5, [ar, ag, ab]);
-  text(card.badge, 74, 10.7, 7, [1, 1, 1], "F2");
-  text(fit(card.name, 28), 26, 20, 12.5, [0.118, 0.153, 0.2], "F2");
+  rect(0, 0, 23, 56, [pr, pg, pb]);
+  rect(23, 0, 67, 14, [panelR, panelG, panelB]);
+  rect(28, 5.2, 50, 1, [ar, ag, ab]);
+  strokeRect(0.6, 0.6, 88.8, 54.8, [pr, pg, pb]);
+  rect(4.2, 6.4, 14.6, 14.6, [1, 1, 1]);
+  ops.push(`q ${(13.8 * mm).toFixed(2)} 0 0 ${(13.8 * mm).toFixed(2)} ${(4.6 * mm).toFixed(2)} ${(pageH - 20.6 * mm).toFixed(2)} cm /Im1 Do Q\n`);
+  text("UJIAN KU", 4.3, 48.5, 6.3, [1, 1, 1], "F2");
+  text(fit(schoolName, 30), 28, 10, 7.1, [0.392, 0.447, 0.514], "F2");
+  text(card.roleLabel, 28, 13.9, 8.1, [pr, pg, pb], "F2");
+  rect(73.5, 7.5, 11.5, 4.8, [ar, ag, ab]);
+  text(card.badge, 75.5, 10.9, 6.5, [1, 1, 1], "F2");
+  text(fit(card.name, 27), 28, 21.2, 11.5, [0.118, 0.153, 0.2], "F2");
 
   const info = [
-    [card.primaryLabel, card.primaryValue, 26, 23],
-    [card.secondaryLabel, card.secondaryValue, 57, 23],
-    [card.idLabel, card.idValue, 26, 34],
-    [card.contactLabel, card.contactValue, 57, 34]
+    [card.primaryLabel, card.primaryValue, 28, 25.6],
+    [card.secondaryLabel, card.secondaryValue, 57, 25.6],
+    [card.idLabel, card.idValue, 28, 35.4],
+    [card.contactLabel, card.contactValue, 57, 35.4]
   ];
   info.forEach(([label, value, x, y]) => {
-    strokeRect(x, y, 28, 8.6, [0.863, 0.894, 0.929]);
-    rect(x, y, 1, 8.6, [ar, ag, ab]);
-    text(label, x + 2.2, y + 3.1, 5.8, [0.392, 0.447, 0.514], "F2");
-    text(fit(value, 18), x + 2.2, y + 6.7, 7.5, [0.118, 0.153, 0.2], "F2");
+    strokeRect(x, y, 27, 7.9, [0.863, 0.894, 0.929]);
+    rect(x, y, 0.9, 7.9, [ar, ag, ab]);
+    text(label, x + 2.2, y + 3.1, 5.3, [0.392, 0.447, 0.514], "F2");
+    text(fit(value, 17), x + 2.2, y + 6.5, 6.8, [0.118, 0.153, 0.2], "F2");
   });
-  rect(26, 45, 58, 8, [pr, pg, pb]);
-  text("USERNAME", 28, 48, 5.8, [0.85, 0.95, 0.95], "F2");
-  text(fit(card.username, 18), 28, 51.5, 9, [1, 1, 1], "F2");
-  text("PASSWORD", 56, 48, 5.8, [0.85, 0.95, 0.95], "F2");
-  text(fit(card.password, 18), 56, 51.5, 9, [1, 1, 1], "F2");
-  text(`Tahun Ajaran ${schoolYear}`, 26, 55, 6, [0.392, 0.447, 0.514], "F1");
-  text(`Dicetak ${pdfDateText()}`, 62, 55, 6, [0.392, 0.447, 0.514], "F1");
+  rect(28, 44.7, 56, 7.1, [pr, pg, pb]);
+  text("USERNAME", 30, 47.1, 5.2, [0.85, 0.95, 0.95], "F2");
+  text(fit(card.username, 16), 30, 50.1, 7.9, [1, 1, 1], "F2");
+  text("PASSWORD", 57, 47.1, 5.2, [0.85, 0.95, 0.95], "F2");
+  text(fit(card.password, 16), 57, 50.1, 7.9, [1, 1, 1], "F2");
+  text(`Tahun Ajaran ${schoolYear}`, 28, 54, 5.3, [0.392, 0.447, 0.514], "F1");
+  text(`Dicetak ${pdfDateText()}`, 63, 54, 5.3, [0.392, 0.447, 0.514], "F1");
 
   const contentBytes = encoder.encode(ops.join(""));
   const objects = [
