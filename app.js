@@ -864,6 +864,23 @@ function printProfileCard(role) {
   const schoolName = state.school.name || "Sekolah";
   const schoolYear = state.school.year || "-";
   const printedAt = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" }).format(new Date());
+  const theme = role === "teacher"
+    ? {
+      primary: "#0f766e",
+      primaryDark: "#0b4f4a",
+      accent: "#f59e0b",
+      accentSoft: "rgba(245, 158, 11, 0.22)",
+      pop: "#ef4444",
+      panel: "#ecfeff"
+    }
+    : {
+      primary: "#4338ca",
+      primaryDark: "#312e81",
+      accent: "#f97316",
+      accentSoft: "rgba(249, 115, 22, 0.22)",
+      pop: "#14b8a6",
+      panel: "#eef2ff"
+    };
   const printWindow = window.open("", "_blank", "width=920,height=720");
   if (!printWindow) {
     alert("Popup cetak diblokir browser. Izinkan popup untuk mencetak kartu.");
@@ -895,32 +912,43 @@ function printProfileCard(role) {
             justify-items: center;
           }
           .card {
+            --primary: ${theme.primary};
+            --primary-dark: ${theme.primaryDark};
+            --accent: ${theme.accent};
+            --accent-soft: ${theme.accentSoft};
+            --pop: ${theme.pop};
+            --panel: ${theme.panel};
             width: 88mm;
             min-height: 56mm;
             position: relative;
             overflow: hidden;
-            border-radius: 14px;
-            border: 1px solid #cfd9e5;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.82);
             background:
-              linear-gradient(135deg, #ffffff 0 55%, #eef7f8 55% 100%);
-            box-shadow: 0 16px 36px rgba(30, 39, 51, 0.18);
+              radial-gradient(circle at 92% 12%, var(--accent-soft) 0 22%, transparent 23%),
+              radial-gradient(circle at 76% 88%, rgba(20, 184, 166, 0.16) 0 20%, transparent 21%),
+              linear-gradient(135deg, #ffffff 0 46%, var(--panel) 46% 100%);
+            box-shadow: 0 18px 42px rgba(30, 39, 51, 0.2);
           }
           .card::before {
             content: "";
             position: absolute;
             inset: 0 auto 0 0;
-            width: 24mm;
-            background: linear-gradient(180deg, #156c71, #0e4b50);
+            width: 25mm;
+            background:
+              linear-gradient(180deg, var(--primary), var(--primary-dark)),
+              var(--primary);
           }
           .card::after {
             content: "";
             position: absolute;
-            right: -20mm;
-            top: -26mm;
-            width: 62mm;
-            height: 62mm;
-            border-radius: 50%;
-            background: rgba(229, 163, 63, 0.22);
+            right: -16mm;
+            top: 0;
+            width: 48mm;
+            height: 100%;
+            background:
+              linear-gradient(135deg, transparent 0 28%, rgba(255, 255, 255, 0.48) 28% 31%, transparent 31% 45%, rgba(255, 255, 255, 0.35) 45% 47%, transparent 47%),
+              linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.36));
           }
           .content {
             position: relative;
@@ -944,10 +972,11 @@ function printProfileCard(role) {
             border-radius: 8px;
             display: grid;
             place-items: center;
-            background: #e5a33f;
+            background: var(--accent);
             color: #1e2733;
             font-weight: 900;
             font-size: 13px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
           }
           .vertical {
             writing-mode: vertical-rl;
@@ -973,13 +1002,14 @@ function printProfileCard(role) {
             text-transform: uppercase;
           }
           .badge {
-            background: #e5a33f;
-            color: #1e2733;
+            background: linear-gradient(135deg, var(--accent), var(--pop));
+            color: #ffffff;
             border-radius: 999px;
             padding: 4px 7px;
             font-size: 8px;
             font-weight: 900;
             letter-spacing: 0.8px;
+            box-shadow: 0 7px 14px rgba(30, 39, 51, 0.18);
           }
           h1 {
             margin: 1px 0 0;
@@ -988,7 +1018,7 @@ function printProfileCard(role) {
             color: #1e2733;
           }
           .role {
-            color: #156c71;
+            color: var(--primary);
             font-size: 10px;
             font-weight: 800;
           }
@@ -999,11 +1029,12 @@ function printProfileCard(role) {
             margin-top: 3px;
           }
           .info {
-            border: 1px solid #dce4ed;
+            border: 1px solid rgba(220, 228, 237, 0.8);
             border-radius: 7px;
-            background: rgba(255, 255, 255, 0.84);
+            background: rgba(255, 255, 255, 0.88);
             padding: 5px 6px;
             min-height: 28px;
+            box-shadow: 0 5px 12px rgba(30, 39, 51, 0.06);
           }
           .info span,
           .credential span {
@@ -1024,10 +1055,12 @@ function printProfileCard(role) {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 6px;
-            border-radius: 9px;
-            background: #156c71;
+            border-radius: 10px;
+            background:
+              linear-gradient(135deg, var(--primary-dark), var(--primary) 62%, var(--pop));
             color: white;
-            padding: 6px;
+            padding: 7px;
+            box-shadow: 0 10px 18px rgba(30, 39, 51, 0.18);
           }
           .credential span {
             color: rgba(255, 255, 255, 0.72);
