@@ -646,9 +646,11 @@ function getResultReview(result) {
     return result.questionReview;
   }
   const exam = state.exams.find((item) => item.id === result.examId);
-  if (!exam || !exam.questions?.length || !result.answers) return [];
+  const storedAnswers = result.answers
+    || (state.activeSession?.id === result.sessionId ? state.activeSession.answers : null);
+  if (!exam || !exam.questions?.length || !storedAnswers) return [];
   return exam.questions.map((question, index) => {
-    const studentAnswer = result.answers[index] ?? result.answers[String(index)];
+    const studentAnswer = storedAnswers[index] ?? storedAnswers[String(index)];
     return {
       number: index + 1,
       question: question.text,
@@ -694,7 +696,7 @@ function renderTeacherResults(teacherExamIds) {
             <small>Kunci: ${escapeHtml(correctLetter)}. ${escapeHtml(correctOption || "-")}</small>
           </td>
           <td>
-            <strong>${escapeHtml(studentLetter)}</strong>
+            <strong>Jawaban murid: ${escapeHtml(studentLetter)}</strong>
             <small>${escapeHtml(studentOption || "Tidak dijawab")}</small>
           </td>
           <td><span class="status ${item.isCorrect ? "live" : "done"}">${item.isCorrect ? "Benar" : "Salah"}</span></td>
@@ -728,7 +730,7 @@ function renderTeacherResults(teacherExamIds) {
           </table>
         </div>
       ` : `
-        <div class="result-empty-note">Detail jawaban belum tersedia untuk hasil lama. Jawaban akan tersimpan untuk ujian berikutnya.</div>
+        <div class="result-empty-note">Detail jawaban belum tersedia untuk hasil ini karena dibuat sebelum fitur simpan jawaban aktif dan sesi jawabannya sudah tidak tersimpan. Mulai ujian berikutnya, guru bisa melihat nomor 1 murid memilih A/B/C/D beserta teks jawabannya.</div>
       `}
     `;
     container.append(details);
