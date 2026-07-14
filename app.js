@@ -1002,7 +1002,7 @@ function printProfileCard(role, accountId = currentUser?.id) {
   const schoolName = state.school.name || "Sekolah";
   const schoolYear = state.school.year || "-";
   const printedAt = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" }).format(new Date());
-  const schoolLogoUrl = new URL("assets/sdn-1-way-tenong-logo.png?v=36", window.location.href).href;
+  const schoolLogoUrl = new URL("assets/sdn-1-way-tenong-logo.png?v=37", window.location.href).href;
   const theme = role === "admin"
     ? {
       primary: "#0f172a",
@@ -1494,7 +1494,7 @@ function createZipBlob(files) {
 
   files.forEach((file) => {
     const nameBytes = encoder.encode(file.name);
-    const dataBytes = encoder.encode(file.content);
+    const dataBytes = file.content instanceof Uint8Array ? file.content : encoder.encode(file.content);
     const checksum = crc32(dataBytes);
     const local = [];
     writeUint32(local, 0x04034b50);
@@ -1545,14 +1545,168 @@ function createZipBlob(files) {
   return new Blob([...chunks, ...centralDirectory, new Uint8Array(end)], { type: "application/zip" });
 }
 
-function fetchLogoDataUrl() {
-  return fetch(new URL("assets/sdn-1-way-tenong-logo.png?v=36", window.location.href))
-    .then((response) => response.blob())
-    .then((blob) => new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.addEventListener("load", () => resolve(reader.result));
-      reader.readAsDataURL(blob);
-    }));
+function dataUrlToBytes(dataUrl) {
+  const base64 = dataUrl.split(",")[1] || "";
+  const binary = atob(base64);
+  return Uint8Array.from(binary, (char) => char.charCodeAt(0));
+}
+
+function loadImageDataUrl(dataUrl) {
+  return new Promise((resolve) => {
+    const image = new Image();
+    image.addEventListener("load", () => resolve(image));
+    image.src = dataUrl;
+  });
+}
+
+async function fetchLogoAssets() {
+  const response = await fetch(new URL("assets/sdn-1-way-tenong-logo.png?v=37", window.location.href));
+  const blob = await response.blob();
+  const dataUrl = await new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => resolve(reader.result));
+    reader.readAsDataURL(blob);
+  });
+  const image = await loadImageDataUrl(dataUrl);
+  const canvas = document.createElement("canvas");
+  canvas.width = 420;
+  canvas.height = 420;
+  const context = canvas.getContext("2d");
+  context.fillStyle = "#ffffff";
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.drawImage(image, 0, 0, canvas.width, canvas.height);
+  const jpegDataUrl = canvas.toDataURL("image/jpeg", 0.92);
+  return {
+    dataUrl,
+    jpegBytes: dataUrlToBytes(jpegDataUrl),
+    imageWidth: canvas.width,
+    imageHeight: canvas.height
+  };
+}
+
+function hexToRgb(hex) {
+  const clean = hex.replace("#", "");
+  return [
+    parseInt(clean.slice(0, 2), 16) / 255,
+    parseInt(clean.slice(2, 4), 16) / 255,
+    parseInt(clean.slice(4, 6), 16) / 255
+  ];
+}
+
+function pdfEscape(value) {
+  return String(value || "")
+    .replace(/[^\x20-\x7e]/g, "")
+    .replace(/\\/g, "\\\\")
+    .replace(/\(/g, "\\(")
+    .replace(/\)/g, "\\)");
+}
+
+function pdfDateText() {
+  return new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" }).format(new Date()).replace(/[^\x20-\x7e]/g, "");
+}
+
+function buildCardPdf(card, role, logoAssets) {
+  const encoder = new TextEncoder();
+  const mm = 72 / 25.4;
+  const pageW = 90 * mm;
+  const pageH = 56 * mm;
+  const theme = getCardTheme(role);
+  const schoolName = (state.school.name || "Sekolah").toUpperCase();
+  const schoolYear = state.school.year || "-";
+  const [pr, pg, pb] = hexToRgb(theme.primary);
+  const [ar, ag, ab] = hexToRgb(theme.accent);
+  const [panelR, panelG, panelB] = hexToRgb(theme.panel);
+  const ops = [];
+  const rect = (x, y, w, h, color) => {
+    const [r, g, b] = color;
+    ops.push(`${r.toFixed(3)} ${g.toFixed(3)} ${b.toFixed(3)} rg ${(x * mm).toFixed(2)} ${(pageH - (y + h) * mm).toFixed(2)} ${(w * mm).toFixed(2)} ${(h * mm).toFixed(2)} re f\n`);
+  };
+  const strokeRect = (x, y, w, h, color) => {
+    const [r, g, b] = color;
+    ops.push(`${r.toFixed(3)} ${g.toFixed(3)} ${b.toFixed(3)} RG ${(x * mm).toFixed(2)} ${(pageH - (y + h) * mm).toFixed(2)} ${(w * mm).toFixed(2)} ${(h * mm).toFixed(2)} re S\n`);
+  };
+  const text = (value, x, y, size, color, font = "F1") => {
+    const [r, g, b] = color;
+    ops.push(`BT /${font} ${size} Tf ${r.toFixed(3)} ${g.toFixed(3)} ${b.toFixed(3)} rg ${(x * mm).toFixed(2)} ${(pageH - y * mm).toFixed(2)} Td (${pdfEscape(value)}) Tj ET\n`);
+  };
+  const fit = (value, max) => String(value || "-").length > max ? `${String(value).slice(0, max - 1)}.` : String(value || "-");
+
+  rect(0, 0, 90, 56, [1, 1, 1]);
+  rect(0, 0, 22, 56, [pr, pg, pb]);
+  rect(22, 0, 68, 13, [panelR, panelG, panelB]);
+  rect(26, 5, 56, 1.2, [ar, ag, ab]);
+  strokeRect(0.5, 0.5, 89, 55, [pr, pg, pb]);
+  ops.push(`q ${(14 * mm).toFixed(2)} 0 0 ${(14 * mm).toFixed(2)} ${(4 * mm).toFixed(2)} ${(pageH - 20 * mm).toFixed(2)} cm /Im1 Do Q\n`);
+  text("UJIAN KU", 7.4, 48, 7, [1, 1, 1], "F2");
+  text(fit(schoolName, 30), 26, 10, 7.4, [0.392, 0.447, 0.514], "F2");
+  text(card.roleLabel, 26, 14, 8.5, [pr, pg, pb], "F2");
+  rect(72, 7, 12, 5, [ar, ag, ab]);
+  text(card.badge, 74, 10.7, 7, [1, 1, 1], "F2");
+  text(fit(card.name, 28), 26, 20, 12.5, [0.118, 0.153, 0.2], "F2");
+
+  const info = [
+    [card.primaryLabel, card.primaryValue, 26, 23],
+    [card.secondaryLabel, card.secondaryValue, 57, 23],
+    [card.idLabel, card.idValue, 26, 34],
+    [card.contactLabel, card.contactValue, 57, 34]
+  ];
+  info.forEach(([label, value, x, y]) => {
+    strokeRect(x, y, 28, 8.6, [0.863, 0.894, 0.929]);
+    rect(x, y, 1, 8.6, [ar, ag, ab]);
+    text(label, x + 2.2, y + 3.1, 5.8, [0.392, 0.447, 0.514], "F2");
+    text(fit(value, 18), x + 2.2, y + 6.7, 7.5, [0.118, 0.153, 0.2], "F2");
+  });
+  rect(26, 45, 58, 8, [pr, pg, pb]);
+  text("USERNAME", 28, 48, 5.8, [0.85, 0.95, 0.95], "F2");
+  text(fit(card.username, 18), 28, 51.5, 9, [1, 1, 1], "F2");
+  text("PASSWORD", 56, 48, 5.8, [0.85, 0.95, 0.95], "F2");
+  text(fit(card.password, 18), 56, 51.5, 9, [1, 1, 1], "F2");
+  text(`Tahun Ajaran ${schoolYear}`, 26, 55, 6, [0.392, 0.447, 0.514], "F1");
+  text(`Dicetak ${pdfDateText()}`, 62, 55, 6, [0.392, 0.447, 0.514], "F1");
+
+  const contentBytes = encoder.encode(ops.join(""));
+  const objects = [
+    encoder.encode("<< /Type /Catalog /Pages 2 0 R >>"),
+    encoder.encode("<< /Type /Pages /Kids [3 0 R] /Count 1 >>"),
+    encoder.encode(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageW.toFixed(2)} ${pageH.toFixed(2)}] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> /XObject << /Im1 6 0 R >> >> /Contents 7 0 R >>`),
+    encoder.encode("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>"),
+    encoder.encode("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>"),
+    { dict: encoder.encode(`<< /Type /XObject /Subtype /Image /Width ${logoAssets.imageWidth} /Height ${logoAssets.imageHeight} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${logoAssets.jpegBytes.length} >>`), stream: logoAssets.jpegBytes },
+    { dict: encoder.encode(`<< /Length ${contentBytes.length} >>`), stream: contentBytes }
+  ];
+
+  const chunks = [encoder.encode("%PDF-1.4\n")];
+  const offsets = [0];
+  let offset = chunks[0].length;
+  objects.forEach((object, index) => {
+    offsets.push(offset);
+    const head = encoder.encode(`${index + 1} 0 obj\n`);
+    chunks.push(head);
+    offset += head.length;
+    if (object.stream) {
+      chunks.push(object.dict, encoder.encode("\nstream\n"), object.stream, encoder.encode("\nendstream\n"));
+      offset += object.dict.length + 8 + object.stream.length + 11;
+    } else {
+      chunks.push(object, encoder.encode("\n"));
+      offset += object.length + 1;
+    }
+    const tail = encoder.encode("endobj\n");
+    chunks.push(tail);
+    offset += tail.length;
+  });
+  const xrefOffset = offset;
+  const xrefLines = ["xref", `0 ${objects.length + 1}`, "0000000000 65535 f "];
+  offsets.slice(1).forEach((item) => xrefLines.push(`${String(item).padStart(10, "0")} 00000 n `));
+  const trailer = encoder.encode(`${xrefLines.join("\n")}\ntrailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`);
+  chunks.push(trailer);
+  const total = chunks.reduce((sum, chunk) => sum + chunk.length, 0);
+  const output = new Uint8Array(total);
+  let cursor = 0;
+  chunks.forEach((chunk) => {
+    output.set(chunk, cursor);
+    cursor += chunk.length;
+  });
+  return output;
 }
 
 async function downloadAllUserCardsZip() {
@@ -1569,14 +1723,23 @@ async function downloadAllUserCardsZip() {
     return;
   }
 
-  const logoDataUrl = await fetchLogoDataUrl();
-  const files = cards.map((item, index) => ({
-    name: `${item.role === "teacher" ? "guru" : "murid"}/${String(index + 1).padStart(3, "0")}-${sanitizeFileName(item.card.name)}.html`,
-    content: buildZipCardHtml(item.card, item.role, logoDataUrl)
-  }));
+  const logoAssets = await fetchLogoAssets();
+  const files = [];
+  cards.forEach((item, index) => {
+    const roleFolder = item.role === "teacher" ? "guru" : "murid";
+    const baseName = `${String(index + 1).padStart(3, "0")}-${sanitizeFileName(item.card.name)}`;
+    files.push({
+      name: `html/${roleFolder}/${baseName}.html`,
+      content: buildZipCardHtml(item.card, item.role, logoAssets.dataUrl)
+    });
+    files.push({
+      name: `pdf/${roleFolder}/${baseName}.pdf`,
+      content: buildCardPdf(item.card, item.role, logoAssets)
+    });
+  });
   files.push({
     name: "README.txt",
-    content: "Buka setiap file HTML kartu di browser, lalu pilih Print atau Save as PDF. Setiap file berisi satu kartu guru/murid terpisah."
+    content: "ZIP ini berisi kartu guru dan murid dalam dua format: folder pdf/ untuk file PDF siap cetak, dan folder html/ sebagai cadangan yang bisa dibuka di browser."
   });
 
   const blob = createZipBlob(files);
