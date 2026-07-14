@@ -974,7 +974,7 @@ function printProfileCard(role) {
   const schoolName = state.school.name || "Sekolah";
   const schoolYear = state.school.year || "-";
   const printedAt = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" }).format(new Date());
-  const schoolLogoUrl = new URL("assets/sdn-1-way-tenong-logo.png", window.location.href).href;
+  const schoolLogoUrl = new URL("assets/sdn-1-way-tenong-logo.png?v=33", window.location.href).href;
   const theme = role === "teacher"
     ? {
       primary: "#0f766e",
