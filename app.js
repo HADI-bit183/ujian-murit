@@ -804,6 +804,10 @@ function printAccountPdf(kind) {
         <style>
           @page { size: A4; margin: 14mm; }
           * { box-sizing: border-box; }
+          html {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          }
           body {
             margin: 0;
             color: #1e2733;
@@ -1035,6 +1039,8 @@ function printProfileCard(role) {
               radial-gradient(circle at 76% 88%, rgba(20, 184, 166, 0.16) 0 20%, transparent 21%),
               linear-gradient(135deg, #ffffff 0 46%, var(--panel) 46% 100%);
             box-shadow: 0 18px 42px rgba(30, 39, 51, 0.2);
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
           }
           .card::before {
             content: "";
@@ -1044,6 +1050,8 @@ function printProfileCard(role) {
             background:
               linear-gradient(180deg, var(--primary), var(--primary-dark)),
               var(--primary);
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
           }
           .card::after {
             content: "";
@@ -1083,6 +1091,8 @@ function printProfileCard(role) {
             font-weight: 900;
             font-size: 13px;
             box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
           }
           .vertical {
             writing-mode: vertical-rl;
@@ -1116,6 +1126,8 @@ function printProfileCard(role) {
             font-weight: 900;
             letter-spacing: 0.8px;
             box-shadow: 0 7px 14px rgba(30, 39, 51, 0.18);
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
           }
           h1 {
             margin: 1px 0 0;
@@ -1141,6 +1153,7 @@ function printProfileCard(role) {
             padding: 5px 6px;
             min-height: 28px;
             box-shadow: 0 5px 12px rgba(30, 39, 51, 0.06);
+            border-left: 3px solid var(--accent);
           }
           .info span,
           .credential span {
@@ -1167,6 +1180,8 @@ function printProfileCard(role) {
             color: white;
             padding: 7px;
             box-shadow: 0 10px 18px rgba(30, 39, 51, 0.18);
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
           }
           .credential span {
             color: rgba(255, 255, 255, 0.72);
@@ -1193,7 +1208,21 @@ function printProfileCard(role) {
           }
           @media print {
             body { background: white; }
-            .card { box-shadow: none; break-inside: avoid; }
+            .card {
+              border: 1.4mm solid var(--primary);
+              box-shadow: none;
+              break-inside: avoid;
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
+            .credential,
+            .badge,
+            .mark,
+            .card::before,
+            .card::after {
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
             .hint { display: none; }
           }
         </style>
@@ -1252,7 +1281,7 @@ function printProfileCard(role) {
               </section>
             </div>
           </article>
-          <p class="hint">Pilih Print atau Save as PDF. Bagikan kartu ini hanya kepada pemilik akun.</p>
+          <p class="hint">Pilih Print atau Save as PDF. Jika warna tidak muncul, aktifkan Background graphics di dialog print.</p>
         </main>
         <script>
           window.addEventListener("load", () => {
