@@ -934,6 +934,25 @@ function printAccountPdf(kind) {
 
 function getCardData(role, accountId = currentUser?.id) {
   const account = findAccount(accountId);
+  if (role === "admin") {
+    if (!account || account.role !== "admin") return null;
+    return {
+      roleLabel: "Kartu Admin",
+      badge: "ADMIN",
+      name: account.name || "Admin Sekolah",
+      username: account.username,
+      password: account.password,
+      primaryLabel: "Sekolah",
+      primaryValue: state.school.name || "-",
+      secondaryLabel: "Tahun Ajaran",
+      secondaryValue: state.school.year || "-",
+      idLabel: "Role",
+      idValue: "Administrator",
+      contactLabel: "Akses",
+      contactValue: "Kelola sistem"
+    };
+  }
+
   if (role === "teacher") {
     const teacher = state.teachers.find((item) => item.accountId === accountId) || null;
     if (!teacher || !account) return null;
@@ -976,15 +995,24 @@ function getCardData(role, accountId = currentUser?.id) {
 function printProfileCard(role, accountId = currentUser?.id) {
   const card = getCardData(role, accountId);
   if (!card) {
-    alert(role === "teacher" ? "Data guru belum lengkap untuk dicetak." : "Data murid belum lengkap untuk dicetak.");
+    alert(role === "teacher" ? "Data guru belum lengkap untuk dicetak." : role === "student" ? "Data murid belum lengkap untuk dicetak." : "Data admin belum lengkap untuk dicetak.");
     return;
   }
 
   const schoolName = state.school.name || "Sekolah";
   const schoolYear = state.school.year || "-";
   const printedAt = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" }).format(new Date());
-  const schoolLogoUrl = new URL("assets/sdn-1-way-tenong-logo.png?v=34", window.location.href).href;
-  const theme = role === "teacher"
+  const schoolLogoUrl = new URL("assets/sdn-1-way-tenong-logo.png?v=35", window.location.href).href;
+  const theme = role === "admin"
+    ? {
+      primary: "#0f172a",
+      primaryDark: "#020617",
+      accent: "#e5a33f",
+      accentSoft: "rgba(229, 163, 63, 0.2)",
+      pop: "#0f766e",
+      panel: "#f8fafc"
+    }
+    : role === "teacher"
     ? {
       primary: "#0f766e",
       primaryDark: "#0b4f4a",
@@ -2107,6 +2135,7 @@ document.getElementById("reset-data").addEventListener("click", () => {
 document.getElementById("print-all-accounts").addEventListener("click", () => printAccountPdf("all"));
 document.getElementById("print-teacher-accounts").addEventListener("click", () => printAccountPdf("teacher"));
 document.getElementById("print-student-accounts").addEventListener("click", () => printAccountPdf("student"));
+document.getElementById("print-admin-card").addEventListener("click", () => printProfileCard("admin"));
 document.getElementById("print-teacher-card").addEventListener("click", () => printProfileCard("teacher"));
 document.getElementById("print-student-card").addEventListener("click", () => printProfileCard("student"));
 
