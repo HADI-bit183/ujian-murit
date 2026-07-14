@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Murid">
+  <rect width="128" height="128" rx="18" fill="#e8edf2"/>
+  <circle cx="64" cy="47" r="24" fill="#b77955"/>
+  <path d="M22 118c5-28 21-43 42-43s37 15 42 43" fill="#e5a33f"/>
+  <path d="M41 77h46l-23 24z" fill="#ffffff"/>
+  <circle cx="55" cy="46" r="4" fill="#1e2733"/>
+  <circle cx="74" cy="46" r="4" fill="#1e2733"/>
+  <path d="M55 57c6 4 13 4 18 0" fill="none" stroke="#1e2733" stroke-width="4" stroke-linecap="round"/>
+  <path d="M37 35l27-15 28 15-28 13z" fill="#12262c"/>
+  <path d="M91 36v22" stroke="#12262c" stroke-width="5" stroke-linecap="round"/>
+</svg>

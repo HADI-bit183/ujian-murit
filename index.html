@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>UjianKu</title>
+    <style>
+      #app-shell[hidden],
+      #app-shell.boot-hidden {
+        display: none !important;
+      }
+    </style>
+    <link rel="stylesheet" href="styles.css?v=20">
+  </head>
+  <body class="logged-out">
+    <section class="login-screen active" id="login-screen" aria-label="Masuk akun">
+      <div class="login-panel">
+        <div class="login-brand">
+          <div class="brand-mark">UK</div>
+          <div>
+            <strong>UjianKu</strong>
+            <span id="login-school-label">Sistem ujian sekolah</span>
+          </div>
+        </div>
+
+        <form class="login-form" id="login-form">
+          <label>Username<input name="identifier" autocomplete="username" required></label>
+          <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+          <p class="form-error" id="login-error" role="alert"></p>
+          <button class="primary-button" type="submit">Masuk</button>
+        </form>
+      </div>
+    </section>
+
+    <div class="app-shell hidden boot-hidden" id="app-shell" hidden style="display: none;">
+      <aside class="sidebar" aria-label="Navigasi utama">
+        <div class="brand">
+          <div class="brand-mark">UK</div>
+          <div>
+            <strong>UjianKu</strong>
+            <span id="school-name-label">Belum diatur</span>
+          </div>
+        </div>
+
+        <nav class="nav-list">
+          <button class="nav-item active" data-view="teacher" data-roles="teacher" type="button"><span aria-hidden="true">▦</span>Guru</button>
+          <button class="nav-item" data-view="student" data-roles="student" type="button"><span aria-hidden="true">◉</span>Murid</button>
+          <button class="nav-item" data-view="admin" data-roles="admin" type="button"><span aria-hidden="true">◎</span>Admin</button>
+          <button class="nav-item" data-view="exam" data-roles="student" type="button"><span aria-hidden="true">▶</span>Ujian</button>
+        </nav>
+
+        <div class="user-card">
+          <img src="assets/teacher.svg" alt="Foto profil guru">
+          <div>
+            <strong id="sidebar-user-name">Belum masuk</strong>
+            <span id="sidebar-user-meta">Pilih role login</span>
+          </div>
+        </div>
+        <button class="logout-button" id="logout-button" type="button">Keluar</button>
+      </aside>
+
+      <main class="main-content">
+        <section class="view active" id="teacher-view" aria-labelledby="teacher-heading">
+          <header class="topbar">
+            <div>
+              <p class="eyebrow" id="today-label"></p>
+              <h1 id="teacher-heading">Dashboard Guru</h1>
+            </div>
+            <div class="topbar-actions">
+              <button class="ghost-button" id="download-template" type="button">Format PDF</button>
+              <button class="primary-button" data-scroll-target="exam-form-panel" type="button">Buat Ujian</button>
+            </div>
+          </header>
+
+          <div class="notice">
+            Semua angka di halaman ini dihitung dari profil, ujian, PDF, hasil, dan log yang tersimpan di browser ini.
+          </div>
+
+          <div class="metric-grid">
+            <article class="metric-card">
+              <span>Ujian Dibuat</span>
+              <strong id="metric-exams">0</strong>
+              <small id="metric-exams-note">Belum ada ujian</small>
+            </article>
+            <article class="metric-card">
+              <span>Peserta</span>
+              <strong id="metric-participants">0</strong>
+              <small id="metric-participants-note">Dihitung dari profil murid</small>
+            </article>
+            <article class="metric-card">
+              <span>Rata-rata</span>
+              <strong id="metric-average">0</strong>
+              <small id="metric-average-note">Belum ada hasil</small>
+            </article>
+            <article class="metric-card warning">
+              <span>Pelanggaran</span>
+              <strong id="metric-violations">0</strong>
+              <small id="metric-violations-note">Belum ada log</small>
+            </article>
+          </div>
+
+          <div class="content-grid">
+            <section class="panel" aria-labelledby="teacher-profile-heading">
+              <div class="panel-header">
+                <h2 id="teacher-profile-heading">Profil Guru</h2>
+                <span class="status live" id="teacher-status-label">Akun admin</span>
+              </div>
+              <form class="form-grid" id="teacher-profile-form">
+                <label>Nama lengkap<input name="name" autocomplete="name" required></label>
+                <label>NIP<input name="nip" required></label>
+                <label>Email<input name="email" type="email" required></label>
+                <label>Telepon<input name="phone" required></label>
+                <label>Mata pelajaran<input name="subject" required></label>
+                <label>Kelas yang diajar<input name="classes" placeholder="Contoh: 8A, 8B" required></label>
+                <button class="primary-button" type="submit">Perbarui Profil</button>
+              </form>
+            </section>
+
+            <section class="panel" id="exam-form-panel" aria-labelledby="exam-form-heading">
+              <div class="panel-header">
+                <h2 id="exam-form-heading">Buat Ujian</h2>
+              </div>
+              <form class="form-grid" id="exam-form">
+                <label>Nama ujian<input name="title" required></label>
+                <label>Mata pelajaran<input name="subject" required></label>
+                <label>Kelas tujuan<input name="className" required></label>
+                <label>Durasi menit<input name="duration" type="number" min="1" value="60" required></label>
+                <label>Mulai<input name="startsAt" type="datetime-local" required></label>
+                <label>Selesai<input name="endsAt" type="datetime-local" required></label>
+                <label>Maks pelanggaran<input name="violationLimit" type="number" min="1" value="3" required></label>
+                <button class="primary-button" type="submit">Simpan Ujian</button>
+              </form>
+            </section>
+
+            <section class="panel wide-panel" aria-labelledby="question-form-heading">
+              <div class="panel-header">
+                <h2 id="question-form-heading">Unggah File Soal</h2>
+              </div>
+              <form class="pdf-form" id="question-form">
+                <label>Ujian<select name="examId"></select></label>
+                <label class="full-row">File soal<input name="pdfFile" type="file" accept="application/pdf,.pdf,text/plain,.txt,text/csv,.csv" required></label>
+                <p class="file-note full-row">Jika belum ada ujian, sistem otomatis membuat ujian dari nama file. Gunakan PDF teks, TXT, atau CSV dengan format nomor, A-D, dan KUNCI.</p>
+                <button class="primary-button" type="submit">Unggah dan Baca Soal</button>
+              </form>
+            </section>
+
+            <section class="panel wide-panel" aria-labelledby="active-exams-heading">
+              <div class="panel-header">
+                <h2 id="active-exams-heading">Ujian Guru</h2>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Nama</th>
+                      <th>Kelas</th>
+                      <th>Jadwal</th>
+                      <th>Soal</th>
+                      <th>Peserta</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="teacher-exams-table"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="panel" aria-labelledby="violations-heading">
+              <div class="panel-header">
+                <h2 id="violations-heading">Pelanggaran</h2>
+              </div>
+              <div class="activity-list" id="teacher-violations"></div>
+            </section>
+
+            <section class="panel" aria-labelledby="results-heading">
+              <div class="panel-header">
+                <h2 id="results-heading">Hasil Ujian</h2>
+              </div>
+              <div class="activity-list" id="teacher-results"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="student-view" aria-labelledby="student-heading">
+          <header class="topbar">
+            <div>
+              <p class="eyebrow" id="student-class-label">Murid</p>
+              <h1 id="student-heading">Dashboard Murid</h1>
+            </div>
+            <button class="primary-button" data-view="exam" type="button">Masuk Ruang Ujian</button>
+          </header>
+
+          <div class="student-layout">
+            <section class="student-hero">
+              <img src="assets/student.svg" alt="Foto profil murid">
+              <div>
+                <p class="eyebrow" id="student-profile-label">Profil murid kosong</p>
+                <h2 id="next-exam-title">Belum ada ujian tersedia</h2>
+                <div class="exam-token">
+                  <span>Kode ujian</span>
+                  <strong id="next-exam-token">-</strong>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel" aria-labelledby="student-profile-heading">
+              <div class="panel-header">
+                <h2 id="student-profile-heading">Profil Murid</h2>
+              </div>
+              <form class="form-grid" id="student-profile-form">
+                <label>Nama<input name="name" autocomplete="name" required></label>
+                <label>NISN<input name="nisn" required></label>
+                <label>Kelas<input name="className" required></label>
+                <label>Email atau username<input name="email" required></label>
+                <button class="primary-button" type="submit">Perbarui Profil</button>
+              </form>
+            </section>
+
+            <div class="metric-grid compact">
+              <article class="metric-card">
+                <span>Nilai Terbaru</span>
+                <strong id="student-latest-score">0</strong>
+                <small id="student-latest-note">Belum ada hasil</small>
+              </article>
+              <article class="metric-card">
+                <span>Riwayat</span>
+                <strong id="student-history-count">0</strong>
+                <small>Ujian selesai</small>
+              </article>
+              <article class="metric-card">
+                <span>Ujian Tersedia</span>
+                <strong id="student-available-count">0</strong>
+                <small>Sesuai kelas murid</small>
+              </article>
+            </div>
+
+            <section class="panel" aria-labelledby="available-heading">
+              <div class="panel-header">
+                <h2 id="available-heading">Ujian Tersedia</h2>
+              </div>
+              <div class="exam-list" id="student-exam-list"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="admin-view" aria-labelledby="admin-heading">
+          <header class="topbar">
+            <div>
+              <p class="eyebrow">Kontrol sekolah</p>
+              <h1 id="admin-heading">Admin Sekolah</h1>
+            </div>
+            <button class="danger-button" id="reset-data" type="button">Reset Data</button>
+          </header>
+
+          <div class="content-grid">
+            <section class="panel" aria-labelledby="school-heading">
+              <div class="panel-header">
+                <h2 id="school-heading">Identitas Sekolah</h2>
+              </div>
+              <form class="form-grid" id="school-form">
+                <label>Nama sekolah<input name="name" required></label>
+                <label>Tahun ajaran<input name="year" placeholder="2026/2027" required></label>
+                <button class="primary-button" type="submit">Simpan Sekolah</button>
+              </form>
+            </section>
+
+            <section class="panel" aria-labelledby="teacher-account-heading">
+              <div class="panel-header">
+                <h2 id="teacher-account-heading">Upload PDF Data Guru</h2>
+              </div>
+              <form class="pdf-form" id="admin-teacher-form">
+                <label class="full-row">File data<input name="teacherPdf" type="file" accept="application/pdf,.pdf,text/plain,.txt,text/csv,.csv" required></label>
+                <p class="file-note full-row">Format per baris: Nama | Username | Password | NIP | Email | Telepon | Mapel | Kelas. Bisa PDF teks, TXT, atau CSV.</p>
+                <button class="primary-button" type="submit">Upload Data Guru</button>
+              </form>
+            </section>
+
+            <section class="panel" aria-labelledby="student-account-heading">
+              <div class="panel-header">
+                <h2 id="student-account-heading">Upload PDF Data Murid</h2>
+              </div>
+              <form class="pdf-form" id="admin-student-form">
+                <label class="full-row">File data<input name="studentPdf" type="file" accept="application/pdf,.pdf,text/plain,.txt,text/csv,.csv" required></label>
+                <p class="file-note full-row">Format per baris: Nama | Username | Password | NISN | Kelas | Email. Bisa PDF teks, TXT, atau CSV.</p>
+                <button class="primary-button" type="submit">Upload Data Murid</button>
+              </form>
+            </section>
+
+            <section class="panel accounts-panel" aria-labelledby="access-heading">
+              <div class="panel-header">
+                <h2 id="access-heading">Akun Terdaftar</h2>
+                <div class="print-actions">
+                  <button class="ghost-button small" id="print-all-accounts" type="button">Cetak Semua</button>
+                </div>
+              </div>
+              <div class="account-grid">
+                <section class="account-list" aria-labelledby="teacher-list-heading">
+                  <div class="account-list-header">
+                    <h3 id="teacher-list-heading">Guru</h3>
+                    <div>
+                      <span id="teacher-count">0 akun</span>
+                      <button class="ghost-button small" id="print-teacher-accounts" type="button">Cetak PDF</button>
+                    </div>
+                  </div>
+                  <div class="table-wrap scroll-table">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Nama</th>
+                          <th>Username</th>
+                          <th>Mapel/Kelas</th>
+                        </tr>
+                      </thead>
+                      <tbody id="admin-teachers-table"></tbody>
+                    </table>
+                  </div>
+                </section>
+
+                <section class="account-list" aria-labelledby="student-list-heading">
+                  <div class="account-list-header">
+                    <h3 id="student-list-heading">Murid</h3>
+                    <div>
+                      <span id="student-count">0 akun</span>
+                      <button class="ghost-button small" id="print-student-accounts" type="button">Cetak PDF</button>
+                    </div>
+                  </div>
+                  <div class="table-wrap scroll-table">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Nama</th>
+                          <th>Username</th>
+                          <th>Kelas</th>
+                        </tr>
+                      </thead>
+                      <tbody id="admin-students-table"></tbody>
+                    </table>
+                  </div>
+                </section>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="exam-view" aria-labelledby="exam-heading">
+          <div class="exam-shell">
+            <header class="exam-header">
+              <div>
+                <p class="eyebrow" id="exam-meta">Pilih ujian dari dashboard murid</p>
+                <h1 id="exam-heading">Ruang Ujian</h1>
+              </div>
+              <div class="exam-tools">
+                <span class="save-state" id="save-state">Belum mulai</span>
+                <strong class="timer" id="timer">00:00</strong>
+                <button class="icon-button" id="fullscreen-button" title="Layar penuh" type="button">⛶</button>
+              </div>
+            </header>
+
+            <div class="exam-grid">
+              <aside class="question-map" aria-label="Nomor soal">
+                <div id="question-map"></div>
+                <button class="danger-button" id="submit-exam" type="button">Kumpulkan</button>
+              </aside>
+
+              <article class="question-panel">
+                <div class="security-strip">
+                  <span id="connection-state">Online</span>
+                  <span id="violation-count">Pelanggaran 0/0</span>
+                  <span>Autosave aktif</span>
+                </div>
+
+                <p class="question-number" id="question-number"></p>
+                <h2 id="question-text">Belum ada ujian yang dipilih.</h2>
+                <div class="options-list" id="options-list"></div>
+
+                <footer class="question-actions">
+                  <button class="ghost-button" id="prev-question" type="button">Sebelumnya</button>
+                  <button class="primary-button" id="next-question" type="button">Berikutnya</button>
+                </footer>
+              </article>
+
+              <aside class="panel exam-log" aria-labelledby="exam-log-heading">
+                <div class="panel-header">
+                  <h2 id="exam-log-heading">Log Ujian</h2>
+                </div>
+                <div class="activity-list" id="exam-log"></div>
+              </aside>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal" id="result-modal" role="dialog" aria-modal="true" aria-labelledby="result-heading">
+      <div class="modal-card">
+        <h2 id="result-heading">Ujian Dikumpulkan</h2>
+        <div class="result-grid">
+          <span>Jawaban benar <strong id="correct-count">0</strong></span>
+          <span>Jawaban salah <strong id="wrong-count">0</strong></span>
+          <span>Nilai <strong id="score-count">0</strong></span>
+          <span>Status <strong id="pass-state">Belum lulus</strong></span>
+        </div>
+        <button class="primary-button" id="close-result" data-view="student" type="button">Kembali</button>
+      </div>
+    </div>
+
+    <script src="app.js?v=20"></script>
+  </body>
+</html>

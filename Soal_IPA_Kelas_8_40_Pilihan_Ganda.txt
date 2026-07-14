@@ -1,0 +1,244 @@
+1. Satuan SI untuk gaya adalah ...
+A. joule
+B. newton
+C. watt
+D. pascal
+2. Sebuah benda bergerak dengan kecepatan 6 m/s selama 5 sekon. Jarak yang ditempuh benda
+tersebut adalah ...
+A. 11m
+B. 20m
+C. 30m
+D. 35m
+3. Perubahan posisi suatu benda terhadap titik acuan disebut ...
+A. gaya
+B. usaha
+C. gerak
+D. energi
+4. Benda yang awalnya diam akan tetap diam jika resultan gaya yang bekerja padanya sama
+dengan nol. Pernyataan ini sesuai dengan ...
+A. Hukum | Newton
+B. Hukum I] Newton
+C. Hukum III Newton
+D. Hukum Pascal
+5. Jika gaya 20 N bekerja pada benda bermassa 4 kg, percepatan benda adalah ...
+A. 4 m/s2
+B. 5 m/s2
+C. 8 m/s2
+D. 80 m/s2
+6. Pasangan gaya aksi dan reaksi terjadi ketika ...
+A. buku diam di atas meja
+B. kaki mendorong tanah saat berjalan
+C. buah jatuh dari pohon
+D. sepeda berhenti karena direm
+7. Alat berikut yang termasuk tuas jenis pertama adalah ...
+A. gunting
+B. gerobak dorong
+C. pinset
+D. sekop
+8. Pada bidang miring, gaya kuasa yang diperlukan menjadi lebih kecil karena ...
+A. jarak tempuh dipersingkat
+B. massa benda berkurang
+C. jarak tempuh diperpanjang
+D. gaya gravitasi hilang
+9. Keuntungan mekanis katrol tetap adalah ...
+A. 0,5
+B. 1
+C.2
+D.4
+10. Contoh penggunaan roda berporos dalam kehidupan sehari-hari adalah ...
+A. tangga
+B. paku
+C. setir mobil
+D. gunting
+11. Zat makanan yang berfungsi utama sebagai sumber energi adalah ...
+A. karbohidrat
+B. vitamin
+C. mineral
+D. air
+12. Pencernaan kimiawi pertama kali terjadi di ...
+A. mulut
+B. kerongkongan
+C. usus besar
+D. anus
+13. Enzim pepsin yang terdapat di lambung berfungsi mencerna ...
+A. lemak menjadi asam lemak
+B. protein menjadi pepton
+C. amilum menjadi glukosa
+D. vitamin menjadi energi
+14. Sebagian besar penyerapan sari-sari makanan terjadi di ...
+A. lambung
+B. usus halus
+C. usus besar
+D. kerongkongan
+15. Organ yang menghasilkan empedu adalah ...
+A. pankreas
+B. hati
+C. ginjal
+D. lambung
+16. Fungsi utama sel darah merah adalah ...
+A. melawan kuman
+B. membekukan darah
+C. mengangkut oksigen
+D. menghasilkan antibodi
+17. Pembuluh darah yang membawa darah keluar dari jantung disebut ...
+A. vena
+B. arteri
+C. kapiler
+D. venula
+18. Bagian jantung yang memompa darah kaya oksigen ke seluruh tubuh adalah ...
+A. serambi kanan
+B. serambi kiri
+C. bilik kanan
+D. bilik kiri
+19. Peredaran darah kecil berlangsung dari ...
+A. jantung - seluruh tubuh - jantung
+B. jantung - paru-paru - jantung
+C. paru-paru - seluruh tubuh - paru-paru
+D. jantung - ginjal - jantung
+20. Penyakit yang ditandai dengan tekanan darah lebih tinggi dari normal disebut ...
+A. anemia
+B. hipotensi
+C. hipertensi
+D. hemofilia
+21. Pertukaran gas oksigen dan karbon dioksida pada paru-paru terjadi di ...
+A. trakea
+B. bronkus
+C. alveolus
+D. laring
+22. Urutan saluran pernapasan yang benar adalah ...
+A. hidung - trakea - faring - bronkus - paru-paru
+B. hidung - faring - laring - trakea - bronkus
+C. hidung - bronkus - laring - trakea - paru-paru
+D. hidung - laring - faring - bronkus - trakea
+23. Saat menarik napas, diafragma akan ...
+A. mengendur dan melengkung ke atas
+B. berkontraksi dan mendatar
+C. berkontraksi dan melengkung ke atas
+D. tetap diam
+24. Kebiasaan merokok dapat merusak sistem pernapasan karena asap rokok mengandung ...
+A. oksigen dan air
+B. tar dan nikotin
+C. protein dan mineral
+D. glukosa dan vitamin
+25. Organ ekskresi yang berfungsi menyaring darah dan membentuk urine adalah ...
+A. hati
+B. paru-paru
+C. kulit
+D. ginjal
+26. Unit struktural dan fungsional terkecil pada ginjal disebut ...
+A. neuron
+B. nefron
+C. alveolus
+D. vili
+27. Kulit berperan sebagai organ ekskresi karena mengeluarkan ...
+A. air mata
+B. keringat
+C. air liur
+D. karbon dioksida
+28. Tekanan adalah besarnya gaya yang bekerja pada setiap satuan ...
+A. massa
+B. volume
+C. luas permukaan
+D. waktu
+29. Sebuah gaya 100 N bekerja pada luas permukaan 0,5 m2. Besar tekanannya adalah ...
+A. 50 Pa
+B. 100 Pa
+C. 200 Pa
+D. 500 Pa
+30. Tekanan hidrostatis semakin besar apabila ...
+A. kedalaman zat cair bertambah
+B. massa jenis zat cair berkurang
+C. kedalaman zat cair berkurang
+D. gaya gravitasi tidak ada
+31. Alat yang bekerja berdasarkan Hukum Pascal adalah ...
+A. dongkrak hidrolik
+B. termometer
+C. kompas
+D. mikroskop
+32. Benda akan terapung dalam zat cair apabila massa jenis benda...
+A. lebih besar daripada massa jenis zat cair
+B. sama dengan nol
+C. lebih kecil daripada massa jenis zat cair
+D. selalu sama dengan massa jenis zat cair
+33. Getaran adalah gerak bolak-balik secara teratur melalui ...
+A. titik tertinggi
+B. titik keseimbangan
+C. titik terjauh
+D. titik gaya
+34. Banyaknya getaran yang terjadi setiap sekon disebut ...
+A. periode
+B. amplitudo
+C. frekuensi
+D. cepat rambat
+35. Sebuah bandul melakukan 20 getaran dalam 10 sekon. Frekuensi getarannya adalah ...
+A. 0,5 Hz
+B. 2 Hz
+C. 10 Hz
+D. 20 Hz
+36. Gelombang yang arah getarnya tegak lurus terhadap arah rambatnya disebut gelombang ...
+A. longitudinal
+B. transversal
+C. mekanik
+D. bunyi
+37. Bunyi tidak dapat merambat melalui ...
+A. udara
+B. air
+C. besi
+D. ruang hampa
+38. Peristiwa terdengarnya bunyi pantul setelah bunyi asli selesai disebut ...
+A. resonansi
+B. gaung
+C. gema
+D. interferensi
+39. Cahaya merambat menurut garis ...
+A. lurus
+B. lengkung
+C. melingkar
+D. acak
+40. Bayangan yang dibentuk oleh cermin datar bersifat ...
+A. nyata, terbalik, dan diperkecil
+B. maya, tegak, dan sama besar
+C. nyata, tegak, dan diperbesar
+D. maya, terbalik, dan diperkecil
+
+KUNCI JAWABAN
+1. B
+2. C
+3. C
+4. A
+5. B
+6. B
+7. A
+8. C
+9. B
+10. C
+11. A
+12. A
+13. B
+14. B
+15. B
+16. C
+17. B
+18. D
+19. B
+20. C
+21. C
+22. B
+23. B
+24. B
+25. D
+26. B
+27. B
+28. C
+29. C
+30. A
+31. A
+32. C
+33. B
+34. C
+35. B
+36. B
+37. D
+38. C
+39. A
+40. B
