@@ -603,6 +603,10 @@ th {
   font-size: 0.82rem;
 }
 
+.print-card-button {
+  min-width: 68px;
+}
+
 .status {
   display: inline-flex;
   align-items: center;

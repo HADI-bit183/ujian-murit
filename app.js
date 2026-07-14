@@ -368,31 +368,41 @@ function renderAdmin() {
 
   const teachers = state.teachers
     .filter((teacher) => isValidImportedTeacher({ ...teacher, username: findAccount(teacher.accountId)?.username, password: findAccount(teacher.accountId)?.password }))
-    .map((teacher) => [teacher.name, findAccount(teacher.accountId)?.username || "-", `${teacher.subject} • ${teacher.classes}`]);
+    .map((teacher) => [teacher.accountId, teacher.name, findAccount(teacher.accountId)?.username || "-", `${teacher.subject} • ${teacher.classes}`]);
 
   const students = state.students
     .filter((student) => isValidImportedStudent({ ...student, username: findAccount(student.accountId)?.username, password: findAccount(student.accountId)?.password }))
-    .map((student) => [student.name, findAccount(student.accountId)?.username || "-", student.className]);
+    .map((student) => [student.accountId, student.name, findAccount(student.accountId)?.username || "-", student.className]);
 
   document.getElementById("teacher-count").textContent = `${teachers.length} akun`;
   document.getElementById("student-count").textContent = `${students.length} akun`;
 
   if (!teachers.length) {
-    teachersTable.append(emptyTableRow("Belum ada akun guru.", 3));
+    teachersTable.append(emptyTableRow("Belum ada akun guru.", 4));
   }
   if (!students.length) {
-    studentsTable.append(emptyTableRow("Belum ada akun murid.", 3));
+    studentsTable.append(emptyTableRow("Belum ada akun murid.", 4));
   }
 
-  teachers.forEach(([name, username, meta]) => {
+  teachers.forEach(([accountId, name, username, meta]) => {
     const row = document.createElement("tr");
-    row.innerHTML = `<td>${escapeHtml(name)}</td><td>${escapeHtml(username)}</td><td>${escapeHtml(meta)}</td>`;
+    row.innerHTML = `
+      <td>${escapeHtml(name)}</td>
+      <td>${escapeHtml(username)}</td>
+      <td>${escapeHtml(meta)}</td>
+      <td><button class="ghost-button small print-card-button" data-role="teacher" data-account-id="${escapeHtml(accountId)}" type="button">Kartu</button></td>
+    `;
     teachersTable.append(row);
   });
 
-  students.forEach(([name, username, meta]) => {
+  students.forEach(([accountId, name, username, meta]) => {
     const row = document.createElement("tr");
-    row.innerHTML = `<td>${escapeHtml(name)}</td><td>${escapeHtml(username)}</td><td>${escapeHtml(meta)}</td>`;
+    row.innerHTML = `
+      <td>${escapeHtml(name)}</td>
+      <td>${escapeHtml(username)}</td>
+      <td>${escapeHtml(meta)}</td>
+      <td><button class="ghost-button small print-card-button" data-role="student" data-account-id="${escapeHtml(accountId)}" type="button">Kartu</button></td>
+    `;
     studentsTable.append(row);
   });
 }
@@ -922,11 +932,10 @@ function printAccountPdf(kind) {
   printWindow.document.close();
 }
 
-function getCurrentCardData(role) {
-  if (!currentUser || currentUser.role !== role) return null;
-  const account = findAccount(currentUser.id);
+function getCardData(role, accountId = currentUser?.id) {
+  const account = findAccount(accountId);
   if (role === "teacher") {
-    const teacher = getCurrentTeacher();
+    const teacher = state.teachers.find((item) => item.accountId === accountId) || null;
     if (!teacher || !account) return null;
     return {
       roleLabel: "Kartu Guru",
@@ -945,7 +954,7 @@ function getCurrentCardData(role) {
     };
   }
 
-  const student = getCurrentStudent();
+  const student = state.students.find((item) => item.accountId === accountId) || null;
   if (!student || !account) return null;
   return {
     roleLabel: "Kartu Murid",
@@ -964,8 +973,8 @@ function getCurrentCardData(role) {
   };
 }
 
-function printProfileCard(role) {
-  const card = getCurrentCardData(role);
+function printProfileCard(role, accountId = currentUser?.id) {
+  const card = getCardData(role, accountId);
   if (!card) {
     alert(role === "teacher" ? "Data guru belum lengkap untuk dicetak." : "Data murid belum lengkap untuk dicetak.");
     return;
@@ -974,7 +983,7 @@ function printProfileCard(role) {
   const schoolName = state.school.name || "Sekolah";
   const schoolYear = state.school.year || "-";
   const printedAt = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" }).format(new Date());
-  const schoolLogoUrl = new URL("assets/sdn-1-way-tenong-logo.png?v=33", window.location.href).href;
+  const schoolLogoUrl = new URL("assets/sdn-1-way-tenong-logo.png?v=34", window.location.href).href;
   const theme = role === "teacher"
     ? {
       primary: "#0f766e",
@@ -2100,6 +2109,12 @@ document.getElementById("print-teacher-accounts").addEventListener("click", () =
 document.getElementById("print-student-accounts").addEventListener("click", () => printAccountPdf("student"));
 document.getElementById("print-teacher-card").addEventListener("click", () => printProfileCard("teacher"));
 document.getElementById("print-student-card").addEventListener("click", () => printProfileCard("student"));
+
+document.getElementById("admin-view").addEventListener("click", (event) => {
+  const button = event.target.closest(".print-card-button");
+  if (!button) return;
+  printProfileCard(button.dataset.role, button.dataset.accountId);
+});
 
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) addViolation("Berpindah tab atau aplikasi");
